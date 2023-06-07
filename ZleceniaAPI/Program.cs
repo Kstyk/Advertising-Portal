@@ -1,0 +1,98 @@
+using FluentValidation;
+using FluentValidation.AspNetCore;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.IdentityModel.Tokens;
+using System.Reflection;
+using System.Text;
+using System.Text.Json.Serialization;
+using ZleceniaAPI;
+using ZleceniaAPI.Entities;
+using ZleceniaAPI.Models;
+using ZleceniaAPI.Models.Validators;
+using ZleceniaAPI.Seeders;
+using ZleceniaAPI.Services;
+
+var builder = WebApplication.CreateBuilder(args);
+
+// Add services to the container.
+
+var authenticationSettings = new AuthenticationSettings();
+builder.Configuration.GetSection("Authentication").Bind(authenticationSettings);
+
+
+builder.Services.AddSingleton(authenticationSettings);
+
+builder.Services.AddAuthentication(option =>
+{
+    option.DefaultAuthenticateScheme = "Bearer";
+    option.DefaultScheme = "Bearer";
+    option.DefaultChallengeScheme = "Bearer";
+}).AddJwtBearer(cfg =>
+{
+    cfg.RequireHttpsMetadata = false;
+    cfg.SaveToken = true;
+    cfg.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
+    {
+        ValidIssuer = authenticationSettings.JwtIssuer, // wydawca danego tokenu
+        ValidAudience = authenticationSettings.JwtIssuer, // dozwolone podmioty do uzycia naszego tokenu
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(authenticationSettings.JwtKey)) // klucz prywatny generowany na podstawie JwtKey
+    };
+});
+
+builder.Services.AddControllers();
+builder.Services.AddSwaggerGen();
+
+builder.Services.AddFluentValidationAutoValidation().AddFluentValidationClientsideAdapters();
+builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
+
+builder.Services.AddScoped<UserSeeder>();
+builder.Services.AddScoped<CategorySeeder>();
+
+builder.Services.AddDbContext<OferiaDbContext>();
+builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
+
+builder.Services.AddScoped<IUserContextService, UserContextService>();
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddScoped<IAccountService, AccountService>();
+builder.Services.AddScoped<ICategoryService, CategoryService>();
+
+builder.Services.AddScoped<IValidator<RegisterUserDto>, RegisterUserDtoValidator>();
+
+builder.Services.AddControllers()
+    .AddNewtonsoftJson(options =>
+    {
+        options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
+        options.SerializerSettings.MaxDepth = 4;
+    });
+
+
+var app = builder.Build();
+
+var scope = app.Services.CreateScope();
+var userSeeder = scope.ServiceProvider.GetRequiredService<UserSeeder>();
+var categorySeeder = scope.ServiceProvider.GetRequiredService<CategorySeeder>();
+
+userSeeder.Seed();
+categorySeeder.Seed();
+
+// Configure the HTTP request pipeline.
+app.UseAuthentication();
+
+app.UseHttpsRedirection();
+
+app.UseSwagger();
+app.UseSwaggerUI(c =>
+{
+    c.SwaggerEndpoint("/swagger/v1/swagger.json", "RestaurantAPI");
+});
+
+
+app.UseRouting();
+app.UseAuthorization();
+
+app.UseEndpoints(endpoints =>
+{
+    endpoints.MapControllers();
+});
+
+app.Run();
