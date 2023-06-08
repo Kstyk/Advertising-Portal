@@ -1,4 +1,7 @@
-﻿namespace ZleceniaAPI.Models
+﻿using Newtonsoft.Json;
+using ZleceniaAPI.Entities;
+
+namespace ZleceniaAPI.Models
 {
     public class RegisterUserDto
     {

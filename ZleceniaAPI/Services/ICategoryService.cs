@@ -7,5 +7,7 @@ namespace ZleceniaAPI.Services
     {
         List<CategoryDto> GetMainCategories();
         List<CategoryDto> GetChildCategories(int mainCategoryId);
+
+        void AddUserCategories(CreateUserCategoryDto dto);
     }
 }

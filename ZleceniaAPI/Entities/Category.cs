@@ -11,5 +11,8 @@ namespace ZleceniaAPI.Entities
         public virtual Category ParentCategory { get; set; }
 
         public virtual List<Category> ChildCategories { get; set; }
+
+        public List<User> Users{ get; set; }
+
     }
 }

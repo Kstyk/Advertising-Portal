@@ -22,7 +22,7 @@ namespace ZleceniaAPI.Services
             _passwordHasher = passwordHasher;
             _authenticationSettings = authenticationSettings;
         }
-        public void RegisterUser(RegisterUserDto dto)
+        public string RegisterUser(RegisterUserDto dto)
         {
             User newUser = new User();
             newUser.Email = dto.Email;
@@ -46,6 +46,15 @@ namespace ZleceniaAPI.Services
 
             _context.Users.Add(newUser);
             _context.SaveChanges();
+
+            var loginUserDto = new LoginUserDto
+            {
+                Email = dto.Email,
+                Password = dto.Password
+            };
+
+            var jwtToken = GenerateJwt(loginUserDto);
+            return jwtToken;
         }
 
         public string GenerateJwt(LoginUserDto loginUserDto)

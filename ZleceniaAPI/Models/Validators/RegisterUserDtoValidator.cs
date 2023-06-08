@@ -54,22 +54,22 @@ namespace ZleceniaAPI.Models.Validators
                 .Cascade(CascadeMode.Stop)
                 .NotNull() // Dodane dla wartości nullable (string?)
                 .NotEmpty()
-                .When(x => x.TypeOfAccountId == 2 && x.StatusOfUserId == 2)
-                .WithMessage("Pole Description nie może być puste, gdy Id Typu Konta i Id Statusu Usera są równe 2");
+                .When(x => x.TypeOfAccountId == 1 && x.StatusOfUserId == 1)
+                .WithMessage("Pole opisu firmy nie może być puste");
 
             RuleFor(x => x.CompanyName)
                 .Cascade(CascadeMode.Stop)
                 .NotNull() // Dodane dla wartości nullable (string?)
                 .NotEmpty()
-                .When(x => x.StatusOfUserId == 2)
-                .WithMessage("Pole CompanyName nie może być puste, gdy Id Statusu Usera jest równe 2");
+                .When(x => x.StatusOfUserId == 1)
+                .WithMessage("Nazwa firmy jest wymagana.");
 
             RuleFor(x => x.TaxIdentificationNumber)
                 .Cascade(CascadeMode.Stop)
                 .NotNull() // Dodane dla wartości nullable (string?)
                 .NotEmpty()
-                .When(x => x.StatusOfUserId == 2)
-                .WithMessage("Pole TaxIdentificationNumber nie może być puste, gdy Id Statusu Usera jest równe 2");
+                .When(x => x.StatusOfUserId == 1)
+                .WithMessage("Numer NIP jest wymagany.");
         }
     }
 }

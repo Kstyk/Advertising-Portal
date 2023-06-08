@@ -22,6 +22,21 @@ namespace ZleceniaAPI.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.Entity("CategoryUser", b =>
+                {
+                    b.Property<int>("CategoriesId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("UsersId")
+                        .HasColumnType("int");
+
+                    b.HasKey("CategoriesId", "UsersId");
+
+                    b.HasIndex("UsersId");
+
+                    b.ToTable("CategoryUser");
+                });
+
             modelBuilder.Entity("ZleceniaAPI.Entities.Category", b =>
                 {
                     b.Property<int>("Id")
@@ -150,6 +165,47 @@ namespace ZleceniaAPI.Migrations
                     b.ToTable("Users");
                 });
 
+            modelBuilder.Entity("ZleceniaAPI.Entities.UsersCategories", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("CategoryId")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("IsMainCategory")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CategoryId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("UsersCategories");
+                });
+
+            modelBuilder.Entity("CategoryUser", b =>
+                {
+                    b.HasOne("ZleceniaAPI.Entities.Category", null)
+                        .WithMany()
+                        .HasForeignKey("CategoriesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ZleceniaAPI.Entities.User", null)
+                        .WithMany()
+                        .HasForeignKey("UsersId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("ZleceniaAPI.Entities.Category", b =>
                 {
                     b.HasOne("ZleceniaAPI.Entities.Category", "ParentCategory")
@@ -176,6 +232,25 @@ namespace ZleceniaAPI.Migrations
                     b.Navigation("StatusOfUser");
 
                     b.Navigation("TypeOfAccount");
+                });
+
+            modelBuilder.Entity("ZleceniaAPI.Entities.UsersCategories", b =>
+                {
+                    b.HasOne("ZleceniaAPI.Entities.Category", "Category")
+                        .WithMany()
+                        .HasForeignKey("CategoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ZleceniaAPI.Entities.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Category");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("ZleceniaAPI.Entities.Category", b =>

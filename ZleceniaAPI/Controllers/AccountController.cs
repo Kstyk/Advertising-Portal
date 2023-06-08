@@ -18,9 +18,9 @@ namespace ZleceniaAPI.Controllers
         [HttpPost("register")]
         public ActionResult ReqisterUser([FromBody] RegisterUserDto dto)
         {
-            _accountService.RegisterUser(dto);
+            string token = _accountService.RegisterUser(dto);
 
-            return Ok();
+            return Ok(token);
         }
 
         [HttpPost("login")]

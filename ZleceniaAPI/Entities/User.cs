@@ -20,7 +20,7 @@
         public virtual TypeOfAccount TypeOfAccount { get; set; } // zlecający czy wykonawca
         public int StatusOfUserId { get; set; }
         public virtual StatusOfUser StatusOfUser { get; set; } // osoba prywatna czy firma
-
+        public List<Category> Categories{ get; set; }
         public User()
         {
 

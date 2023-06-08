@@ -30,5 +30,14 @@ namespace ZleceniaAPI.Controllers
 
             return Ok(categories);
         }
+
+        [HttpPost("user/add")]
+        public ActionResult AddUserCategories([FromBody] CreateUserCategoryDto dto)
+        {
+            _categoryService.AddUserCategories(dto);
+
+            return Ok();
+        }
+
     }
 }
