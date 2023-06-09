@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using ZleceniaAPI.Models;
 using ZleceniaAPI.Services;
 
@@ -32,6 +33,7 @@ namespace ZleceniaAPI.Controllers
         }
 
         [HttpPost("user/add")]
+        [Authorize(Policy = "IsContractor")]
         public ActionResult AddUserCategories([FromBody] CreateUserCategoryDto dto)
         {
             _categoryService.AddUserCategories(dto);

@@ -1,11 +1,13 @@
 using FluentValidation;
 using FluentValidation.AspNetCore;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using System.Reflection;
 using System.Text;
 using System.Text.Json.Serialization;
 using ZleceniaAPI;
+using ZleceniaAPI.Authorization;
 using ZleceniaAPI.Entities;
 using ZleceniaAPI.Models;
 using ZleceniaAPI.Models.Validators;
@@ -38,6 +40,12 @@ builder.Services.AddAuthentication(option =>
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(authenticationSettings.JwtKey)) // klucz prywatny generowany na podstawie JwtKey
     };
 });
+
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("IsContractor", builder => builder.AddRequirements(new TypeOfAccountRequirement("Wykonawca")));
+});
+builder.Services.AddScoped<IAuthorizationHandler, TypeOfAccountRequirementHandler>();
 
 builder.Services.AddControllers();
 builder.Services.AddSwaggerGen();
