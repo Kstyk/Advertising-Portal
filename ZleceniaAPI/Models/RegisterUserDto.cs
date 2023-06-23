@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using ZleceniaAPI.Entities;
+using ZleceniaAPI.Enums;
 
 namespace ZleceniaAPI.Models
 {

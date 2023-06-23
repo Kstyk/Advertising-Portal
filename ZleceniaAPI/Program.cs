@@ -65,6 +65,7 @@ builder.Services.AddScoped<IAccountService, AccountService>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
 
 builder.Services.AddScoped<IValidator<RegisterUserDto>, RegisterUserDtoValidator>();
+builder.Services.AddScoped<IValidator<CreateUserCategoryDto>, CreateUseCategoryDtoValidator>();
 
 builder.Services.AddControllers()
     .AddNewtonsoftJson(options =>

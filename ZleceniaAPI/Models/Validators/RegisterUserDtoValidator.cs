@@ -1,5 +1,8 @@
 ﻿using FluentValidation;
+using System;
+using System.Linq;
 using ZleceniaAPI.Entities;
+using ZleceniaAPI.Enums;
 
 namespace ZleceniaAPI.Models.Validators
 {
@@ -17,7 +20,7 @@ namespace ZleceniaAPI.Models.Validators
 
                     if (emailInUse)
                     {
-                        context.AddFailure("Email", "Ten email istnieje w naszej bazie");
+                        context.AddFailure("Email", "Ten email istnieje w naszej bazie.");
                     }
                 });
 
@@ -36,7 +39,7 @@ namespace ZleceniaAPI.Models.Validators
 
                     if (!statusExists)
                     {
-                        context.AddFailure("StatusOfUserId", "Nieprawidłowy identyfikator statusu użytkownika");
+                        context.AddFailure("StatusOfUserId", "Nieprawidłowy identyfikator statusu użytkownika.");
                     }
                 });
             RuleFor(x => x.TypeOfAccountId).NotEmpty()
@@ -46,7 +49,7 @@ namespace ZleceniaAPI.Models.Validators
 
                     if (!typeExists)
                     {
-                        context.AddFailure("TypeOfAccountId", "Nieprawidłowy identyfikator typu konta");
+                        context.AddFailure("TypeOfAccountId", "Nieprawidłowy identyfikator typu konta.");
                     }
                 });
 
@@ -54,8 +57,8 @@ namespace ZleceniaAPI.Models.Validators
                 .Cascade(CascadeMode.Stop)
                 .NotNull() // Dodane dla wartości nullable (string?)
                 .NotEmpty()
-                .When(x => x.TypeOfAccountId == 1 && x.StatusOfUserId == 1)
-                .WithMessage("Pole opisu firmy nie może być puste");
+                .When(x => x.StatusOfUserId == 1 && x.TypeOfAccountId == 2)
+                .WithMessage("Pole opisu firmy nie może być puste.");
 
             RuleFor(x => x.CompanyName)
                 .Cascade(CascadeMode.Stop)
@@ -70,6 +73,19 @@ namespace ZleceniaAPI.Models.Validators
                 .NotEmpty()
                 .When(x => x.StatusOfUserId == 1)
                 .WithMessage("Numer NIP jest wymagany.");
-        }
+
+
+            Voivodeship[] enumValues = (Voivodeship[])Enum.GetValues(typeof(Voivodeship));
+            List<String> enums = new List<string>();
+            foreach(Voivodeship v in enumValues)
+            {
+                enums.Add(v.ToString());
+            }
+
+            RuleFor(x => x.Voivodeship)
+                .NotNull()
+                .Must(value => enums.Contains(value))
+                    .WithMessage("Nieprawidłowe województwo.");
+                }
     }
 }

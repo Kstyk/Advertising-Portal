@@ -10,6 +10,7 @@ namespace ZleceniaAPI.Entities
         public DbSet<User> Users { get; set; }
         public DbSet<Category> Categories { get; set; }
         public DbSet<UsersCategories> UsersCategories { get; set; }
+        public DbSet<AreaOfWork> AreaOfWorks { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

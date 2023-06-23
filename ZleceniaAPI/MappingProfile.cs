@@ -10,6 +10,11 @@ namespace ZleceniaAPI
         {
             CreateMap<Category, CategoryDto>()
                   .ForMember(dest => dest.ChildCategories, opt => opt.MapFrom(src => src.ChildCategories));
+
+
+            CreateMap<CreateUserCategoryDto, AreaOfWork>()
+                .ForMember(r => r.Voivodeship, opt => opt.MapFrom(src => src.Voivodeship))
+                .ForMember(r => r.WholeCountry, opt => opt.MapFrom(src => src.WholeCountry));
         }
     }
 }

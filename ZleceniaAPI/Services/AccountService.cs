@@ -5,6 +5,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using ZleceniaAPI.Entities;
+using ZleceniaAPI.Enums;
 using ZleceniaAPI.Exceptions;
 using ZleceniaAPI.Models;
 
@@ -34,6 +35,7 @@ namespace ZleceniaAPI.Services
             newUser.PostalCode = dto.PostalCode;
             newUser.BuildingNumber = dto.BuildingNumber;
             newUser.Voivodeship = dto.Voivodeship;
+
             newUser.CompanyName = dto.CompanyName;
             newUser.Description = dto.Description;
             newUser.TaxIdentificationNumber = dto.TaxIdentificationNumber;
