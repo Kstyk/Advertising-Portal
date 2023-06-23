@@ -13,5 +13,6 @@
         public virtual Address Address { get; set; }
         public decimal? Budget { get; set; }
         public int PublicationDays { get; set; }
+        public bool AllowRemotely { get; set; }
     }
 }

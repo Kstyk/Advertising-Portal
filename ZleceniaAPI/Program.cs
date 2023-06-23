@@ -44,6 +44,7 @@ builder.Services.AddAuthentication(option =>
 builder.Services.AddAuthorization(options =>
 {
     options.AddPolicy("IsContractor", builder => builder.AddRequirements(new TypeOfAccountRequirement("Wykonawca")));
+    options.AddPolicy("IsPrincipal", builder => builder.AddRequirements(new TypeOfAccountRequirement("Zleceniodawca")));
 });
 builder.Services.AddScoped<IAuthorizationHandler, TypeOfAccountRequirementHandler>();
 
@@ -63,6 +64,7 @@ builder.Services.AddScoped<IUserContextService, UserContextService>();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<IAccountService, AccountService>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
+builder.Services.AddScoped<IOrderService, OrderService>();
 
 builder.Services.AddScoped<IValidator<RegisterUserDto>, RegisterUserDtoValidator>();
 builder.Services.AddScoped<IValidator<CreateUserCategoryDto>, CreateUseCategoryDtoValidator>();

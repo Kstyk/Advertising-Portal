@@ -19,12 +19,14 @@ namespace ZleceniaAPI.Authorization
         protected override Task HandleRequirementAsync(AuthorizationHandlerContext context, TypeOfAccountRequirement requirement)
         {
             var userId = _userContextService.GetUserId;
-            var user = _dbContext.Users.Find(userId);
 
-            if (user == null)
+            if (userId == null)
             {
-                throw new BadRequestException("Musisz się zalogować.");
+                context.Fail();
+                return Task.CompletedTask;
             }
+
+            var user = _dbContext.Users.Find(userId);
 
             var typeOfAccountName = _dbContext.TypesOfAccounts.Find(user.TypeOfAccountId);
 
