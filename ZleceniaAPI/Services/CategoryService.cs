@@ -68,14 +68,21 @@ namespace ZleceniaAPI.Services
                 IsMainCategory = false
             }).ToList();
 
-            userCategories.First().IsMainCategory = true;
 
-            // Tworzenie modelu zakresu lokalizacji pracy
-            AreaOfWork areaOfWork = _mapper.Map<CreateUserCategoryDto, AreaOfWork>(dto);
-            areaOfWork.UserId = (int)userId;
+            var actualUserCategories = _dbContext.UsersCategories
+                .Where(uc => uc.UserId == userId).ToList();
 
-            // Zapisz do bazy danych
-            _dbContext.AreaOfWorks.Add(areaOfWork);
+            if (actualUserCategories.Count == 0)
+            {
+                userCategories.First().IsMainCategory = true;
+                // Tworzenie modelu zakresu lokalizacji pracy
+                AreaOfWork areaOfWork = _mapper.Map<CreateUserCategoryDto, AreaOfWork>(dto);
+                areaOfWork.UserId = (int)userId;
+
+                // Zapisz do bazy danych
+                _dbContext.AreaOfWorks.Add(areaOfWork);
+            }
+
             _dbContext.UsersCategories.AddRange(userCategories);
             _dbContext.SaveChanges();
         }

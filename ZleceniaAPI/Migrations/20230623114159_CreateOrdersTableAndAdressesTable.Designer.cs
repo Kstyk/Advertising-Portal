@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ZleceniaAPI.Entities;
 
@@ -11,9 +12,11 @@ using ZleceniaAPI.Entities;
 namespace ZleceniaAPI.Migrations
 {
     [DbContext(typeof(OferiaDbContext))]
-    partial class OferiaDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230623114159_CreateOrdersTableAndAdressesTable")]
+    partial class CreateOrdersTableAndAdressesTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -198,9 +201,6 @@ namespace ZleceniaAPI.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int?>("AddressId")
-                        .HasColumnType("int");
-
                     b.Property<string>("CompanyName")
                         .HasColumnType("nvarchar(max)");
 
@@ -240,8 +240,6 @@ namespace ZleceniaAPI.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("AddressId");
 
                     b.HasIndex("StatusOfUserId");
 
@@ -340,11 +338,6 @@ namespace ZleceniaAPI.Migrations
 
             modelBuilder.Entity("ZleceniaAPI.Entities.User", b =>
                 {
-                    b.HasOne("ZleceniaAPI.Entities.Address", "Address")
-                        .WithMany()
-                        .HasForeignKey("AddressId")
-                        .OnDelete(DeleteBehavior.NoAction);
-
                     b.HasOne("ZleceniaAPI.Entities.StatusOfUser", "StatusOfUser")
                         .WithMany()
                         .HasForeignKey("StatusOfUserId")
@@ -356,8 +349,6 @@ namespace ZleceniaAPI.Migrations
                         .HasForeignKey("TypeOfAccountId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("Address");
 
                     b.Navigation("StatusOfUser");
 

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
@@ -16,36 +17,21 @@ namespace ZleceniaAPI.Services
         private OferiaDbContext _context;
         private IPasswordHasher<User> _passwordHasher;
         private AuthenticationSettings _authenticationSettings;
+        private readonly IMapper _mapper;
 
-        public AccountService(OferiaDbContext context, IPasswordHasher<User> passwordHasher, AuthenticationSettings authenticationSettings)
+
+        public AccountService(OferiaDbContext context, IPasswordHasher<User> passwordHasher, AuthenticationSettings authenticationSettings, IMapper mapper)
         {
             _context = context;
             _passwordHasher = passwordHasher;
             _authenticationSettings = authenticationSettings;
+            _mapper = mapper;
         }
         public string RegisterUser(RegisterUserDto dto)
         {
-            User newUser = new User();
-            newUser.Email = dto.Email;
-            newUser.FirstName = dto.FirstName;
-            newUser.LastName = dto.LastName;
-            newUser.PhoneNumber = dto.PhoneNumber;
-            newUser.Street = dto.Street;
-            newUser.City = dto.City;
-            newUser.PostalCode = dto.PostalCode;
-            newUser.BuildingNumber = dto.BuildingNumber;
-            newUser.Voivodeship = dto.Voivodeship;
-
-            newUser.CompanyName = dto.CompanyName;
-            newUser.Description = dto.Description;
-            newUser.TaxIdentificationNumber = dto.TaxIdentificationNumber;
-            newUser.StatusOfUserId = dto.StatusOfUserId;
-            newUser.TypeOfAccountId = dto.StatusOfUserId;
-
+            var newUser = _mapper.Map<User>(dto);
             var hashedPassword = _passwordHasher.HashPassword(newUser, dto.Password);
-
             newUser.Password = hashedPassword;
-
             _context.Users.Add(newUser);
             _context.SaveChanges();
 
