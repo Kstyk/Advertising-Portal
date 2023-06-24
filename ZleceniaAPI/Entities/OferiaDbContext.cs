@@ -13,6 +13,7 @@ namespace ZleceniaAPI.Entities
         public DbSet<UsersCategories> UsersCategories { get; set; }
         public DbSet<AreaOfWork> AreaOfWorks { get; set; }
         public DbSet<Order> Orders { get; set; }
+        public DbSet<Offer> Offers { get; set; }
 
 
 
@@ -37,6 +38,29 @@ namespace ZleceniaAPI.Entities
                .WithMany()
                .HasForeignKey(e => e.AddressId)
                .OnDelete(DeleteBehavior.NoAction);
+
+
+            modelBuilder.Entity<Order>()
+                .Property(e => e.Description)
+                .IsRequired()
+                .HasMaxLength(2500);
+            modelBuilder.Entity<Order>()
+                .Property(e => e.Budget)
+                .HasColumnType("decimal(18,2)");
+            modelBuilder.Entity<Offer>()
+                .HasOne<Order>(s => s.Order)
+                .WithMany(of => of.Offers)
+                .HasForeignKey(o => o.OrderId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<Offer>()
+                .Property(e => e.Content)
+                .IsRequired()
+                .HasMaxLength(2000);
+            modelBuilder.Entity<Offer>()
+               .Property(e => e.Price)
+               .HasColumnType("decimal(18,2)");
+            
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)

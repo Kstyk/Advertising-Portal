@@ -35,6 +35,20 @@ namespace ZleceniaAPI
                     PostalCode = dto.PostalCode,
                     BuildingNumber = dto.BuildingNumber
                 }));
+
+            CreateMap<AddOfferDto, Offer>();
+
+            CreateMap<Order, OrderDto>();
+            CreateMap<Offer, OfferDto>()
+                .ForMember(r => r.FirstName, c => c.MapFrom(s => s.User.FirstName))
+                .ForMember(r => r.LastName, c => c.MapFrom(s => s.User.LastName))
+                .ForMember(r => r.Email, c => c.MapFrom(s => s.User.Email))
+                .ForMember(r => r.PhoneNumber, c => c.MapFrom(s => s.User.PhoneNumber))
+                .ForMember(r => r.CompanyName, c => c.MapFrom(s => s.User.CompanyName));
+
+
+            CreateMap<Address, AddressDto>();
+            CreateMap<User, UserDto>();
         }
     }
 }

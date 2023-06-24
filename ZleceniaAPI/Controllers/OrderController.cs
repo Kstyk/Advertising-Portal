@@ -25,5 +25,23 @@ namespace ZleceniaAPI.Controllers
 
             return Ok();
         }
+
+        [HttpPost("{orderId}/add-offer")]
+        [Authorize(Policy = "IsContractor")]
+        public ActionResult AddOfferToOrder([FromRoute] int orderId, [FromBody] AddOfferDto dto)
+        {
+            _orderService.AddOffer(orderId, dto);
+
+            return Ok();
+        }
+
+        [HttpGet("{orderId}")]
+        [Authorize]
+        public ActionResult<OrderDto> GetOrder([FromRoute] int orderId)
+        {
+            var order = _orderService.GetById(orderId);
+
+            return Ok(order);
+        }
     }
 }

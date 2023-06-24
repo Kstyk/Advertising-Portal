@@ -14,5 +14,7 @@
         public decimal? Budget { get; set; }
         public int PublicationDays { get; set; }
         public bool AllowRemotely { get; set; }
+        public DateTime StartDate { get; set; }
+        public virtual List<Offer> Offers{ get; set; }
     }
 }

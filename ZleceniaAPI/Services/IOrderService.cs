@@ -5,5 +5,7 @@ namespace ZleceniaAPI.Services
     public interface IOrderService
     {
         void AddNewOrder(AddOrderDto dto);
+        void AddOffer(int orderId, AddOfferDto dto);
+        OrderDto GetById(int id);
     }
 }
