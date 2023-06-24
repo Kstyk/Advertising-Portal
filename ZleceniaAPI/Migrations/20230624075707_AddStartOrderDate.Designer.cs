@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ZleceniaAPI.Entities;
 
@@ -11,9 +12,11 @@ using ZleceniaAPI.Entities;
 namespace ZleceniaAPI.Migrations
 {
     [DbContext(typeof(OferiaDbContext))]
-    partial class OferiaDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230624075707_AddStartOrderDate")]
+    partial class AddStartOrderDate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -114,44 +117,6 @@ namespace ZleceniaAPI.Migrations
                     b.ToTable("Categories");
                 });
 
-            modelBuilder.Entity("ZleceniaAPI.Entities.Offer", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Content")
-                        .IsRequired()
-                        .HasMaxLength(2000)
-                        .HasColumnType("nvarchar(2000)");
-
-                    b.Property<int>("OrderId")
-                        .HasColumnType("int");
-
-                    b.Property<decimal>("Price")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<string>("PriceFor")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("PublicDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("OrderId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("Offers");
-                });
-
             modelBuilder.Entity("ZleceniaAPI.Entities.Order", b =>
                 {
                     b.Property<int>("Id")
@@ -174,8 +139,7 @@ namespace ZleceniaAPI.Migrations
 
                     b.Property<string>("Description")
                         .IsRequired()
-                        .HasMaxLength(2500)
-                        .HasColumnType("nvarchar(2500)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("PublicationDays")
                         .HasColumnType("int");
@@ -356,25 +320,6 @@ namespace ZleceniaAPI.Migrations
                     b.Navigation("ParentCategory");
                 });
 
-            modelBuilder.Entity("ZleceniaAPI.Entities.Offer", b =>
-                {
-                    b.HasOne("ZleceniaAPI.Entities.Order", "Order")
-                        .WithMany("Offers")
-                        .HasForeignKey("OrderId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.HasOne("ZleceniaAPI.Entities.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Order");
-
-                    b.Navigation("User");
-                });
-
             modelBuilder.Entity("ZleceniaAPI.Entities.Order", b =>
                 {
                     b.HasOne("ZleceniaAPI.Entities.Address", "Address")
@@ -450,11 +395,6 @@ namespace ZleceniaAPI.Migrations
             modelBuilder.Entity("ZleceniaAPI.Entities.Category", b =>
                 {
                     b.Navigation("ChildCategories");
-                });
-
-            modelBuilder.Entity("ZleceniaAPI.Entities.Order", b =>
-                {
-                    b.Navigation("Offers");
                 });
 #pragma warning restore 612, 618
         }

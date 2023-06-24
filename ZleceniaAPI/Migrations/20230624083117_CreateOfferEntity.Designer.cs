@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ZleceniaAPI.Entities;
 
@@ -11,9 +12,11 @@ using ZleceniaAPI.Entities;
 namespace ZleceniaAPI.Migrations
 {
     [DbContext(typeof(OferiaDbContext))]
-    partial class OferiaDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230624083117_CreateOfferEntity")]
+    partial class CreateOfferEntity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -126,6 +129,9 @@ namespace ZleceniaAPI.Migrations
                         .IsRequired()
                         .HasMaxLength(2000)
                         .HasColumnType("nvarchar(2000)");
+
+                    b.Property<int>("ContractorId")
+                        .HasColumnType("int");
 
                     b.Property<int>("OrderId")
                         .HasColumnType("int");
@@ -359,7 +365,7 @@ namespace ZleceniaAPI.Migrations
             modelBuilder.Entity("ZleceniaAPI.Entities.Offer", b =>
                 {
                     b.HasOne("ZleceniaAPI.Entities.Order", "Order")
-                        .WithMany("Offers")
+                        .WithMany()
                         .HasForeignKey("OrderId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
@@ -450,11 +456,6 @@ namespace ZleceniaAPI.Migrations
             modelBuilder.Entity("ZleceniaAPI.Entities.Category", b =>
                 {
                     b.Navigation("ChildCategories");
-                });
-
-            modelBuilder.Entity("ZleceniaAPI.Entities.Order", b =>
-                {
-                    b.Navigation("Offers");
                 });
 #pragma warning restore 612, 618
         }

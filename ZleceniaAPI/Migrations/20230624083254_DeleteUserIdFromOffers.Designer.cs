@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ZleceniaAPI.Entities;
 
@@ -11,9 +12,11 @@ using ZleceniaAPI.Entities;
 namespace ZleceniaAPI.Migrations
 {
     [DbContext(typeof(OferiaDbContext))]
-    partial class OferiaDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230624083254_DeleteUserIdFromOffers")]
+    partial class DeleteUserIdFromOffers
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -127,6 +130,9 @@ namespace ZleceniaAPI.Migrations
                         .HasMaxLength(2000)
                         .HasColumnType("nvarchar(2000)");
 
+                    b.Property<int>("ContractorId")
+                        .HasColumnType("int");
+
                     b.Property<int>("OrderId")
                         .HasColumnType("int");
 
@@ -140,14 +146,11 @@ namespace ZleceniaAPI.Migrations
                     b.Property<DateTime>("PublicDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
 
-                    b.HasIndex("OrderId");
+                    b.HasIndex("ContractorId");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("OrderId");
 
                     b.ToTable("Offers");
                 });
@@ -358,21 +361,21 @@ namespace ZleceniaAPI.Migrations
 
             modelBuilder.Entity("ZleceniaAPI.Entities.Offer", b =>
                 {
+                    b.HasOne("ZleceniaAPI.Entities.User", "Contractor")
+                        .WithMany()
+                        .HasForeignKey("ContractorId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("ZleceniaAPI.Entities.Order", "Order")
-                        .WithMany("Offers")
+                        .WithMany()
                         .HasForeignKey("OrderId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("ZleceniaAPI.Entities.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.Navigation("Contractor");
 
                     b.Navigation("Order");
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("ZleceniaAPI.Entities.Order", b =>
@@ -450,11 +453,6 @@ namespace ZleceniaAPI.Migrations
             modelBuilder.Entity("ZleceniaAPI.Entities.Category", b =>
                 {
                     b.Navigation("ChildCategories");
-                });
-
-            modelBuilder.Entity("ZleceniaAPI.Entities.Order", b =>
-                {
-                    b.Navigation("Offers");
                 });
 #pragma warning restore 612, 618
         }
