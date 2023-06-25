@@ -21,6 +21,39 @@ namespace ZleceniaAPI.Entities
         {
             base.OnModelCreating(modelBuilder);
 
+            // Address
+            modelBuilder.Entity<Address>()
+                .Property(e => e.PostalCode)
+                .IsRequired()
+                .HasMaxLength(6);
+            modelBuilder.Entity<Address>()
+                .Property(e => e.City)
+                .IsRequired()
+                .HasMaxLength(255);
+            modelBuilder.Entity<Address>()
+                .Property(e => e.Street)
+                .IsRequired()
+                .HasMaxLength(255);
+            modelBuilder.Entity<Address>()
+                .Property(e => e.BuildingNumber)
+                .IsRequired()
+                .HasMaxLength(20);
+
+            // Area of work
+            modelBuilder.Entity<AreaOfWork>()
+                .Property(e => e.Voivodeship)
+                .HasMaxLength(60);
+            modelBuilder.Entity<AreaOfWork>()
+                .Property(e => e.WholeCountry)
+                .HasMaxLength(60);
+
+            // Category
+            modelBuilder.Entity<Category>()
+                .Property(e => e.Name)
+                .IsRequired()
+                .HasMaxLength(255);
+
+            // User
             modelBuilder.Entity<User>()
                 .Property(e => e.FirstName)
                 .IsRequired()
@@ -38,8 +71,18 @@ namespace ZleceniaAPI.Entities
                .WithMany()
                .HasForeignKey(e => e.AddressId)
                .OnDelete(DeleteBehavior.NoAction);
+            modelBuilder.Entity<User>()
+                .Property(e => e.PhoneNumber)
+                .IsRequired()
+                .HasMaxLength(25);
+            modelBuilder.Entity<User>()
+                .Property(e => e.Description)
+                .HasMaxLength(10000);
+            modelBuilder.Entity<User>()
+                .Property(e => e.CompanyName)
+                .HasMaxLength(255);
 
-
+            // Order
             modelBuilder.Entity<Order>()
                 .Property(e => e.Description)
                 .IsRequired()
@@ -47,12 +90,17 @@ namespace ZleceniaAPI.Entities
             modelBuilder.Entity<Order>()
                 .Property(e => e.Budget)
                 .HasColumnType("decimal(18,2)");
+            modelBuilder.Entity<Order>()
+                .Property(e => e.Title)
+                .IsRequired()
+                .HasMaxLength(255);
+
+            // Offer
             modelBuilder.Entity<Offer>()
                 .HasOne<Order>(s => s.Order)
                 .WithMany(of => of.Offers)
                 .HasForeignKey(o => o.OrderId)
                 .OnDelete(DeleteBehavior.NoAction);
-
             modelBuilder.Entity<Offer>()
                 .Property(e => e.Content)
                 .IsRequired()
@@ -60,6 +108,9 @@ namespace ZleceniaAPI.Entities
             modelBuilder.Entity<Offer>()
                .Property(e => e.Price)
                .HasColumnType("decimal(18,2)");
+            modelBuilder.Entity<Offer>()
+                .Property(e => e.PriceFor)
+                .HasMaxLength(50);
             
         }
 

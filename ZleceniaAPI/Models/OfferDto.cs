@@ -11,8 +11,8 @@ namespace ZleceniaAPI.Models
         public string PhoneNumber { get; set; }
         public string? CompanyName { get; set; }
         public string Content { get; set; }
-        public Decimal Price { get; set; }
-        public string PriceFor { get; set; } // całość, za godzinę, za sztukę
+        public Decimal? Price { get; set; }
+        public string? PriceFor { get; set; } // całość, za godzinę, za sztukę
         public DateTime PublicDate { get; set; }
     }
 }
