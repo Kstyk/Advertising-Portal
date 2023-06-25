@@ -69,6 +69,15 @@ builder.Services.AddScoped<IOrderService, OrderService>();
 builder.Services.AddScoped<IValidator<RegisterUserDto>, RegisterUserDtoValidator>();
 builder.Services.AddScoped<IValidator<CreateUserCategoryDto>, CreateUseCategoryDtoValidator>();
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("FrontendClient", builder =>
+        builder.AllowAnyMethod()
+            .AllowAnyHeader()
+            .WithOrigins("http://localhost:5173")
+        );
+});
+
 builder.Services.AddControllers()
     .AddNewtonsoftJson(options =>
     {
@@ -88,6 +97,8 @@ categorySeeder.Seed();
 
 // Configure the HTTP request pipeline.
 app.UseAuthentication();
+
+app.UseCors("FrontendClient");
 
 app.UseHttpsRedirection();
 
