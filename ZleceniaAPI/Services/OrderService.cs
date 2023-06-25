@@ -2,8 +2,10 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration.UserSecrets;
+using System.Linq.Expressions;
 using System.Net;
 using ZleceniaAPI.Entities;
+using ZleceniaAPI.Enums;
 using ZleceniaAPI.Exceptions;
 using ZleceniaAPI.Models;
 
@@ -30,7 +32,7 @@ namespace ZleceniaAPI.Services
 
             if (category == null)
             {
-                throw new BadRequestException("Kategoria o ID " + dto.CategoryId + " nie istnieje.", "categoryId");
+                throw new BadHttpRequestException("Kategoria o ID " + category.Id + " nie znaleziona.");
             }
 
             var userId = _userContextService.GetUserId;
@@ -66,10 +68,41 @@ namespace ZleceniaAPI.Services
 
             if(order == null)
             {
-                throw new BadRequestException("Zlecenie nie znalezione.");
+                throw new BadRequestException("Nie znaleziono zlecenia o ID " + id + ".");
             }
 
             var result = _mapper.Map<OrderDto>(order);
+
+            return result;
+        }
+
+        public PagedResult<OrderDto> GetAll(OrderQuery? query)
+        {
+            var baseQuery = _dbContext
+                .Orders
+                .Include(r => r.User)
+                .Include(r => r.Address)
+                .Include(r => r.Category)
+                .Where(r => query.CategoryId == null || r.CategoryId == query.CategoryId);
+
+            var columnsSelectors = new Dictionary<string, Expression<Func<Order, object>>> {
+                    { nameof(Order.StartDate), r => r.StartDate }
+                };
+
+            var selectedColumn = columnsSelectors[query.SortBy];
+
+            baseQuery = query.SortDirection == SortDirection.ASC ?
+                baseQuery.OrderBy(selectedColumn) :
+                baseQuery.OrderByDescending(selectedColumn);
+
+            var orders = baseQuery
+                .Skip(query.PageSize * (query.PageNumber - 1))
+                .Take(query.PageSize)
+                .ToList();
+
+            var ordersDto = _mapper.Map<List<OrderDto>>(orders);
+
+            var result = new PagedResult<OrderDto>(ordersDto, baseQuery.Count(), query.PageSize, query.PageNumber);
 
             return result;
         }

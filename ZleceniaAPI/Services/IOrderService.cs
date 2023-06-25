@@ -7,5 +7,6 @@ namespace ZleceniaAPI.Services
         void AddNewOrder(AddOrderDto dto);
         void AddOffer(int orderId, AddOfferDto dto);
         OrderDto GetById(int id);
+        PagedResult<OrderDto> GetAll(OrderQuery? query);
     }
 }

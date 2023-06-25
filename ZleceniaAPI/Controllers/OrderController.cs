@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using ZleceniaAPI.Exceptions;
 using ZleceniaAPI.Models;
 using ZleceniaAPI.Services;
 
@@ -36,12 +37,24 @@ namespace ZleceniaAPI.Controllers
         }
 
         [HttpGet("{orderId}")]
-        [Authorize]
         public ActionResult<OrderDto> GetOrder([FromRoute] int orderId)
         {
-            var order = _orderService.GetById(orderId);
+            try
+            {
+                var order = _orderService.GetById(orderId);
+                return Ok(order);
+            } catch(BadRequestException ex)
+            {
+                return NotFound(ex);
+            }
+        }
 
-            return Ok(order);
+        [HttpGet("all")]
+        public ActionResult<IEnumerable<OrderDto>> GetAllRestaurants([FromQuery] OrderQuery? query)
+        {
+            var ordersDtos = _orderService.GetAll(query);
+
+            return Ok(ordersDtos);
         }
     }
 }
