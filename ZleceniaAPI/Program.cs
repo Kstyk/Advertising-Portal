@@ -68,6 +68,7 @@ builder.Services.AddScoped<IOrderService, OrderService>();
 
 builder.Services.AddScoped<IValidator<RegisterUserDto>, RegisterUserDtoValidator>();
 builder.Services.AddScoped<IValidator<CreateUserCategoryDto>, CreateUseCategoryDtoValidator>();
+builder.Services.AddScoped<IValidator<AddOrderDto>, AddOrderDtoValidator>();
 
 builder.Services.AddCors(options =>
 {

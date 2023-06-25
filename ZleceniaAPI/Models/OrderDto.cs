@@ -11,7 +11,7 @@ namespace ZleceniaAPI.Models
         public virtual CategoryDto Category { get; set; }
         public virtual AddressDto Address { get; set; }
         public decimal? Budget { get; set; }
-        public int PublicationDays { get; set; }
+        public int PublicationDays { get; set; } = 0;
         public bool AllowRemotely { get; set; }
         public DateTime StartDate { get; set; }
         public virtual List<OfferDto> Offers { get; set; }

@@ -23,7 +23,11 @@ namespace ZleceniaAPI.Models.Validators
                                           || (string.IsNullOrEmpty(voivodeship) && !string.IsNullOrEmpty(dto.WholeCountry)))
                 .WithMessage("Musisz wybrać konkretne województwo lub cały kraj.");
 
-            
+            RuleFor(dto => dto.Categories)
+                .NotEmpty()
+                .WithMessage("Musisz wybrać przynajmniej jedną kategorię.")
+                .Must((categories) => categories != null && categories.Count() > 0)
+                .WithMessage("Musisz wybrać przynajmniej jedną kategorię.");
 
         }
     }
