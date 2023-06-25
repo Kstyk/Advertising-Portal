@@ -83,7 +83,11 @@ namespace ZleceniaAPI.Services
                 .Include(r => r.User)
                 .Include(r => r.Address)
                 .Include(r => r.Category)
-                .Where(r => query.CategoryId == null || r.CategoryId == query.CategoryId);
+                .Where(r => query.CategoryId == null 
+                || r.CategoryId == query.CategoryId 
+                || r.Category.ParentCategoryId == query.CategoryId
+                || r.Category.ParentCategory.ParentCategoryId == query.CategoryId
+                );
 
             var columnsSelectors = new Dictionary<string, Expression<Func<Order, object>>> {
                     { nameof(Order.StartDate), r => r.StartDate }
