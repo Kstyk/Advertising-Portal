@@ -11,7 +11,9 @@ namespace ZleceniaAPI.Models.Validators
         public RegisterUserDtoValidator(OferiaDbContext dbContext)
         {
             RuleFor(x => x.ConfirmPassword).Equal(e => e.Password);
-            RuleFor(x => x.Email).NotEmpty().EmailAddress();
+            RuleFor(x => x.Email)
+                .NotEmpty().WithMessage("Email jest wymagany.")
+                .EmailAddress().WithMessage("Niepoprawny format adresu e-mail.");
 
             RuleFor(x => x.Email)
                 .Custom((value, context) =>
@@ -23,16 +25,26 @@ namespace ZleceniaAPI.Models.Validators
                         context.AddFailure("Email", "Ten email istnieje w naszej bazie.");
                     }
                 });
+            RuleFor(x => x.PhoneNumber)
+                .Custom((value, context) =>
+                {
+                    var phoneInUse = dbContext.Users.Any(u => u.PhoneNumber == value);
 
-            RuleFor(x => x.FirstName).NotEmpty();
-            RuleFor(x => x.LastName).NotEmpty();
-            RuleFor(x => x.City).NotEmpty();
-            RuleFor(x => x.Street).NotEmpty();
-            RuleFor(x => x.Voivodeship).NotEmpty();
-            RuleFor(x => x.BuildingNumber).NotEmpty();
-            RuleFor(x => x.PhoneNumber).NotEmpty();
-            RuleFor(x => x.PostalCode).NotEmpty();
-            RuleFor(x => x.StatusOfUserId).NotEmpty()
+                    if (phoneInUse)
+                    {
+                        context.AddFailure("PhoneNumber", "Ten numer telefonu istnieje w naszej bazie.");
+                    }
+                });
+
+            RuleFor(x => x.FirstName).NotEmpty().WithMessage("Imię jest wymagane.");
+            RuleFor(x => x.LastName).NotEmpty().WithMessage("Nazwisko jest wymagane.");
+            RuleFor(x => x.City).NotEmpty().WithMessage("Miasto jest wymagane.");
+            RuleFor(x => x.Street).NotEmpty().WithMessage("Ulica jest wymagana.");
+            RuleFor(x => x.Voivodeship).NotEmpty().WithMessage("Województwo jest wymagane.");
+            RuleFor(x => x.BuildingNumber).NotEmpty().WithMessage("Numer budynku jest wymagany.");
+            RuleFor(x => x.PhoneNumber).NotEmpty().WithMessage("Numer telefonu jest wymagany.");
+            RuleFor(x => x.PostalCode).NotEmpty().WithMessage("Kod pocztowy jest wymagany.");
+            RuleFor(x => x.StatusOfUserId).NotEmpty().WithMessage("Musisz wybrać status użytkownika.")
                 .Custom((value, context) =>
                 {
                     var statusExists = dbContext.StatusOfUsers.Any(s => s.Id == value);
@@ -42,7 +54,7 @@ namespace ZleceniaAPI.Models.Validators
                         context.AddFailure("StatusOfUserId", "Nieprawidłowy identyfikator statusu użytkownika.");
                     }
                 });
-            RuleFor(x => x.TypeOfAccountId).NotEmpty()
+            RuleFor(x => x.TypeOfAccountId).NotEmpty().WithMessage("Typ konta jest wymagany.")
                 .Custom((value, context) =>
                 {
                     var typeExists = dbContext.TypesOfAccounts.Any(t => t.Id == value);
