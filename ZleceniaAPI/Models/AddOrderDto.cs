@@ -15,6 +15,7 @@ namespace ZleceniaAPI.Models
         public decimal? Budget { get; set; }
         public int PublicationDays { get; set; }
         public bool AllowRemotely { get; set; }
+        public bool IsActive { get; set; } = true;
 
     }
 }

@@ -16,5 +16,6 @@
         public bool AllowRemotely { get; set; }
         public DateTime StartDate { get; set; }
         public virtual List<Offer> Offers{ get; set; }
+        public bool IsActive { get; set; } = true;
     }
 }

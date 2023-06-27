@@ -32,10 +32,16 @@ namespace ZleceniaAPI.Services
 
             if (category == null)
             {
-                throw new BadHttpRequestException("Kategoria o ID " + category.Id + " nie znaleziona.");
+                throw new NullReferenceException("Kategoria o ID " + dto.CategoryId + " nie została znaleziona.");
             }
 
             var userId = _userContextService.GetUserId;
+
+            if (userId == null)
+            {
+                throw new BadRequestException("Błędne dane użytkownika.");
+            }
+
             order.UserId = (int)userId;
 
             _dbContext.Orders.Add(order);
@@ -48,7 +54,32 @@ namespace ZleceniaAPI.Services
             offer.PublicDate = DateTime.Now;
 
             var userId = _userContextService.GetUserId;
+
+            if (userId == null)
+            {
+                throw new BadRequestException("Błędne dane użytkownika.");
+            }
+
             offer.UserId = (int)userId;
+
+            var order = _dbContext
+                .Orders
+                .Include(o => o.Offers)
+                .FirstOrDefault(order => order.Id == orderId);
+
+            if (order == null)
+            {
+                throw new NullReferenceException("Zlecenie o ID " + orderId + " nie zostało znalezione.");
+            }
+
+            if (!order.IsActive)
+            {
+                throw new BadRequestException("To zlecenie już nie jest dostępne.");
+            }
+
+            if (order.Offers.Any(of => of.UserId == userId)) {
+                throw new BadRequestException("Już złożyłeś ofertę do tego zlecenia.");
+            }
 
             offer.OrderId = orderId;
 
@@ -68,7 +99,7 @@ namespace ZleceniaAPI.Services
 
             if(order == null)
             {
-                throw new BadRequestException("Nie znaleziono zlecenia o ID " + id + ".");
+                throw new NullReferenceException("Nie znaleziono zlecenia o ID " + id + ".");
             }
 
             var result = _mapper.Map<OrderDto>(order);

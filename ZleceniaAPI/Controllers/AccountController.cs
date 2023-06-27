@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using ZleceniaAPI.Exceptions;
 using ZleceniaAPI.Models;
 using ZleceniaAPI.Services;
 
@@ -25,9 +26,15 @@ namespace ZleceniaAPI.Controllers
 
         [HttpPost("login")]
         public ActionResult LoginUser([FromBody] LoginUserDto dto) {
-            string token = _accountService.GenerateJwt(dto);
+            try
+            {
+                string token = _accountService.GenerateJwt(dto);
 
-            return Ok(token);
+                return Ok(token);
+            } catch(BadRequestException ex)
+            {
+                return Unauthorized(ex);
+            }
         }
     }
 }
