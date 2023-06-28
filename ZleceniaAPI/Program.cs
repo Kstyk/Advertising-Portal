@@ -3,6 +3,7 @@ using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
+using NLog.Web;
 using System.Reflection;
 using System.Text;
 using System.Text.Json.Serialization;
@@ -16,6 +17,8 @@ using ZleceniaAPI.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Logging.ClearProviders();
+builder.Host.UseNLog();
 // Add services to the container.
 
 var authenticationSettings = new AuthenticationSettings();
@@ -51,6 +54,7 @@ builder.Services.AddScoped<IAuthorizationHandler, TypeOfAccountRequirementHandle
 builder.Services.AddControllers();
 builder.Services.AddSwaggerGen();
 
+
 builder.Services.AddFluentValidationAutoValidation().AddFluentValidationClientsideAdapters();
 builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
 
@@ -62,9 +66,12 @@ builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
 
 builder.Services.AddScoped<IUserContextService, UserContextService>();
 builder.Services.AddHttpContextAccessor();
+
 builder.Services.AddScoped<IAccountService, AccountService>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<IOrderService, OrderService>();
+builder.Services.AddHostedService<OrderStatusBackgroundService>();
+
 
 builder.Services.AddScoped<IValidator<RegisterUserDto>, RegisterUserDtoValidator>();
 builder.Services.AddScoped<IValidator<CreateUserCategoryDto>, CreateUseCategoryDtoValidator>();
