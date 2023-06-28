@@ -15,12 +15,17 @@ namespace ZleceniaAPI.Services
     {
         private IMapper _mapper;
         private OferiaDbContext _dbContext;
+        private readonly IServiceScopeFactory _scopeFactory;
         private IUserContextService _userContextService;
-        public OrderService(IMapper mapper, OferiaDbContext dbContext, IUserContextService userContextService)
+        private readonly ILogger<OrderService> _logger;
+
+        public OrderService(IMapper mapper, OferiaDbContext dbContext, IServiceScopeFactory scopeFactory, IUserContextService userContextService, ILogger<OrderService> logger)
         {
             _mapper = mapper;
             _dbContext = dbContext;
             _userContextService = userContextService;
+            _scopeFactory = scopeFactory;
+            _logger = logger;
         }
 
         public void AddNewOrder(AddOrderDto dto)
@@ -114,10 +119,11 @@ namespace ZleceniaAPI.Services
                 .Include(r => r.User)
                 .Include(r => r.Address)
                 .Include(r => r.Category)
-                .Where(r => query.CategoryId == null 
+                .Where(r => (query.CategoryId == null 
                 || r.CategoryId == query.CategoryId 
                 || r.Category.ParentCategoryId == query.CategoryId
-                || r.Category.ParentCategory.ParentCategoryId == query.CategoryId
+                || r.Category.ParentCategory.ParentCategoryId == query.CategoryId)
+                && r.IsActive == query.IsActive
                 );
 
             var columnsSelectors = new Dictionary<string, Expression<Func<Order, object>>> {
@@ -140,6 +146,23 @@ namespace ZleceniaAPI.Services
             var result = new PagedResult<OrderDto>(ordersDto, baseQuery.Count(), query.PageSize, query.PageNumber);
 
             return result;
+        }
+
+        public async Task CheckAndUpdateOrderStatus()
+        {
+            var currentDate = DateTime.UtcNow.Date;
+
+            var ordersToCheck = _dbContext.Orders
+                .Where(o => o.IsActive && o.StartDate.AddDays(o.PublicationDays) <= currentDate)
+                .ToList();
+
+            foreach (var order in ordersToCheck)
+            {
+                order.IsActive = false;
+            }
+
+
+            await _dbContext.SaveChangesAsync();
         }
     }
 }

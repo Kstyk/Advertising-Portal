@@ -14,6 +14,7 @@ namespace ZleceniaAPI.Models
         public int PublicationDays { get; set; } = 0;
         public bool AllowRemotely { get; set; }
         public DateTime StartDate { get; set; }
+        public Boolean IsActive { get; set; }
         public virtual List<OfferDto> Offers { get; set; }
     }
 }
