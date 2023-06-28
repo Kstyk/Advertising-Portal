@@ -65,7 +65,7 @@ namespace ZleceniaAPI.Controllers
         }
 
         [HttpGet("all")]
-        public ActionResult<IEnumerable<OrderDto>> GetAllRestaurants([FromQuery] OrderQuery? query)
+        public ActionResult<IEnumerable<OrderDto>> GetAllOrders([FromQuery] OrderQuery? query)
         {
             var ordersDtos = _orderService.GetAll(query);
 

@@ -8,5 +8,6 @@ namespace ZleceniaAPI.Services
         void AddOffer(int orderId, AddOfferDto dto);
         OrderDto GetById(int id);
         PagedResult<OrderDto> GetAll(OrderQuery? query);
+        Task CheckAndUpdateOrderStatus();
     }
 }
