@@ -953,8 +953,76 @@ namespace ZleceniaAPI.Seeders
                 },
                new Category()
                {
-                   Name = "Ogród"
-               }
+                   Name = "Firma, Biuro"
+               },
+               new Category()
+               {
+                   Name = "Fotowoltaika"
+               },
+               new Category()
+               {
+                   Name = "Grafika, Multimedia"
+               },
+                new Category()
+               {
+                   Name = "Handel"
+               },
+               new Category()
+               {
+                   Name = "Kultura, Sztuka"
+               },
+               new Category()
+               {
+                   Name = "Marketing, Reklama"
+               },
+               new Category()
+               {
+                   Name = "Motoryzacja, Transport"
+               },
+               new Category()
+               {
+                   Name = "Naprawa, Serwis"
+               },
+               new Category()
+               {
+                   Name = "Prace Domowe, Ogród"
+               },
+               new Category()
+               {
+                   Name = "Prawo, Finanse"
+               },
+               new Category()
+               {
+                   Name = "Programowanie, IT"
+               },
+               new Category()
+               {
+                   Name = "Przemysł"
+               },
+               new Category()
+               {
+                   Name = "Rozrywka, Imprezy"
+               },
+               new Category()
+               {
+                   Name = "Rzemiosło, Fachowcy"
+               },
+               new Category()
+               {
+                   Name = "Sport, Turystyka"
+               },
+               new Category()
+               {
+                   Name = "Teksty, Tłumaczenia"
+               },
+               new Category()
+               {
+                   Name = "Zdrowie, Uroda"
+               },
+               new Category()
+               {
+                   Name = "Pozostałe"
+               },
             };
 
             return categories;

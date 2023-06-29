@@ -4,7 +4,9 @@ namespace ZleceniaAPI.Services
 {
     public interface IAccountService
     {
-        string RegisterUser(RegisterUserDto dto);
+        void RegisterUser(RegisterUserDto dto);
         string GenerateJwt(LoginUserDto loginUserDto);
+        List<StatusOfUserDto> GetAllStatusesOfUser();
+        List<TypeOfAccountDto> GetAllTypesOfAccount();
     }
 }

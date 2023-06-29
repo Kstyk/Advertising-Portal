@@ -49,6 +49,8 @@ namespace ZleceniaAPI
 
             CreateMap<Address, AddressDto>();
             CreateMap<User, UserDto>();
+            CreateMap<StatusOfUser, StatusOfUserDto>();
+            CreateMap<TypeOfAccount, TypeOfAccountDto>();
         }
     }
 }

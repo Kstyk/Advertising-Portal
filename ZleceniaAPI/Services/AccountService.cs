@@ -18,31 +18,39 @@ namespace ZleceniaAPI.Services
         private IPasswordHasher<User> _passwordHasher;
         private AuthenticationSettings _authenticationSettings;
         private readonly IMapper _mapper;
+        private IUserContextService _userContextService;
 
 
-        public AccountService(OferiaDbContext context, IPasswordHasher<User> passwordHasher, AuthenticationSettings authenticationSettings, IMapper mapper)
+        public AccountService(OferiaDbContext context, IPasswordHasher<User> passwordHasher, AuthenticationSettings authenticationSettings, IMapper mapper, IUserContextService userContext)
         {
             _context = context;
             _passwordHasher = passwordHasher;
             _authenticationSettings = authenticationSettings;
             _mapper = mapper;
+            _userContextService = userContext;
         }
-        public string RegisterUser(RegisterUserDto dto)
+
+        public List<StatusOfUserDto> GetAllStatusesOfUser()
+        {
+            var statuses = _mapper.Map<List<StatusOfUserDto>>(_context.StatusOfUsers);
+
+            return statuses;
+        }
+
+        public List<TypeOfAccountDto> GetAllTypesOfAccount()
+        {
+            var types = _mapper.Map<List<TypeOfAccountDto>>(_context.TypesOfAccounts);
+
+            return types;
+        }
+
+        public void RegisterUser(RegisterUserDto dto)
         {
             var newUser = _mapper.Map<User>(dto);
             var hashedPassword = _passwordHasher.HashPassword(newUser, dto.Password);
             newUser.Password = hashedPassword;
             _context.Users.Add(newUser);
             _context.SaveChanges();
-
-            var loginUserDto = new LoginUserDto
-            {
-                Email = dto.Email,
-                Password = dto.Password
-            };
-
-            var jwtToken = GenerateJwt(loginUserDto);
-            return jwtToken;
         }
 
         public string GenerateJwt(LoginUserDto loginUserDto)
@@ -67,7 +75,10 @@ namespace ZleceniaAPI.Services
             var claims = new List<Claim>()
             {
                 new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-                new Claim(ClaimTypes.Name, $"{user.Email}"),
+                new Claim("Id", $"{user.Id}"),
+                new Claim("Email", $"{user.Email}"),
+                new Claim("FirstName", $"{user.FirstName}"),
+                new Claim("LastName", $"{user.LastName}"),
                 new Claim("TypeOfAccount", $"{user.TypeOfAccount.Name}"),
                 new Claim("StatusOfUser", $"{user.StatusOfUser.Name}"),
             };

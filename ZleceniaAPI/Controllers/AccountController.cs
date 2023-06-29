@@ -19,9 +19,9 @@ namespace ZleceniaAPI.Controllers
         [HttpPost("register")]
         public ActionResult ReqisterUser([FromBody] RegisterUserDto dto)
         {
-            string token = _accountService.RegisterUser(dto);
+            _accountService.RegisterUser(dto);
 
-            return Ok(token);
+            return Ok();
         }
 
         [HttpPost("login")]
@@ -35,6 +35,22 @@ namespace ZleceniaAPI.Controllers
             {
                 return Unauthorized(ex);
             }
+        }
+
+        [HttpGet("statuses")]
+        public ActionResult<List<StatusOfUserDto>> GetStatuses()
+        {
+            var statuses = _accountService.GetAllStatusesOfUser();
+
+            return Ok(statuses);
+        }
+
+        [HttpGet("types")]
+        public ActionResult<List<TypeOfAccountDto>> GetTypes()
+        {
+            var types = _accountService.GetAllTypesOfAccount();
+
+            return Ok(types);
         }
     }
 }
