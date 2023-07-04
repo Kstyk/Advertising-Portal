@@ -80,7 +80,7 @@ namespace ZleceniaAPI.Services
                 new Claim("FirstName", $"{user.FirstName}"),
                 new Claim("LastName", $"{user.LastName}"),
                 new Claim("TypeOfAccount", $"{user.TypeOfAccount.Name}"),
-                new Claim("StatusOfUser", $"{user.StatusOfUser.Name}"),
+                new Claim("StatusOfUser", $"{user.StatusOfUser.Name}")
             };
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_authenticationSettings.JwtKey));
@@ -91,8 +91,10 @@ namespace ZleceniaAPI.Services
                 signingCredentials: credentials);
 
             var tokenHandler = new JwtSecurityTokenHandler();
+            
 
             return tokenHandler.WriteToken(token);
         }
+        
     }
 }
