@@ -51,6 +51,10 @@ namespace ZleceniaAPI
             CreateMap<User, UserDto>();
             CreateMap<StatusOfUser, StatusOfUserDto>();
             CreateMap<TypeOfAccount, TypeOfAccountDto>();
+            CreateMap<UsersCategories, UserCategoryDto>()
+                .ForMember(r => r.CategoryId, c => c.MapFrom(s => s.CategoryId))
+                .ForMember(r => r.Name, c => c.MapFrom(s => s.Category.Name))
+                .ForMember(r => r.ParentCategory, c => c.MapFrom(s => s.Category.ParentCategory));
         }
     }
 }
