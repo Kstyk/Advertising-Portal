@@ -9,5 +9,9 @@ namespace ZleceniaAPI.Services
         List<CategoryDto> GetChildCategories(int mainCategoryId);
 
         void AddUserCategories(CreateUserCategoryDto dto);
+        List<CategoryDto> GetAllCategories();
+        CategoryDto GetCategoryById(int id);
+        List<UserCategoryDto> GetCategoriesByContractor();
+        UserCategoryDto DeleteUserCategory(int categoryId);
     }
 }

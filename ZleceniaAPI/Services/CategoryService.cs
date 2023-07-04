@@ -32,10 +32,18 @@ namespace ZleceniaAPI.Services
 
         public List<CategoryDto> GetChildCategories(int mainCategoryId)
         {
-            var childCategories = _mapper.Map<List<CategoryDto>>(_dbContext.Categories.Include(c => c.ParentCategory).
+            var childCategories = _mapper.Map<List<CategoryDto>>(_dbContext.Categories.Include(c => c.ParentCategory).ThenInclude(c2 => c2.ParentCategory).
                 Where(category => category.ParentCategoryId == mainCategoryId));
 
             return childCategories;
+        }
+
+        public List<CategoryDto> GetAllCategories()
+        {
+            var categories = _mapper.Map<List<CategoryDto>>(_dbContext.Categories.Include(c => c.ParentCategory)
+                .ThenInclude(c2 => c2.ParentCategory));
+
+            return categories;
         }
 
         public void AddUserCategories(CreateUserCategoryDto dto) {
@@ -86,5 +94,46 @@ namespace ZleceniaAPI.Services
             _dbContext.UsersCategories.AddRange(userCategories);
             _dbContext.SaveChanges();
         }
+
+         public CategoryDto GetCategoryById(int id)
+        {
+            var category = _mapper.Map<CategoryDto>(_dbContext.Categories
+                .Include(c => c.ParentCategory)
+                .ThenInclude(c2 => c2.ParentCategory)
+                .FirstOrDefault(c => c.Id == id));
+
+            return category;
+        }
+
+        public List<UserCategoryDto> GetCategoriesByContractor()
+        {
+            var userId = _userContextService.GetUserId;
+
+
+            var categories = _mapper.Map<List<UserCategoryDto>>(_dbContext.UsersCategories
+                .Include(c => c.Category)
+                .ThenInclude(p => p.ParentCategory)
+                .ThenInclude(p2 => p2.ParentCategory)
+                .Where(e => e.UserId == userId).ToList());
+
+            return categories;
+        }
+
+        public UserCategoryDto DeleteUserCategory(int userCategoryId)
+        {
+            var userId = _userContextService.GetUserId;
+            
+            var category = _dbContext.UsersCategories
+                .FirstOrDefault(cat => cat.UserId ==  userId && cat.Id == userCategoryId);
+
+            if(category != null)
+            {
+                _dbContext.UsersCategories.Remove(category);
+                _dbContext.SaveChanges();
+                return _mapper.Map<UserCategoryDto>(category);
+            }
+            return null;
+        }
+
     }
 }
