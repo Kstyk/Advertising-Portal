@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using ZleceniaAPI.Exceptions;
 using ZleceniaAPI.Models;
 using ZleceniaAPI.Services;
 
@@ -24,6 +25,14 @@ namespace ZleceniaAPI.Controllers
             return Ok(categories);
         }
 
+        [HttpGet("{id}")]
+        public ActionResult<CategoryDto> GetCategoryById([FromRoute] int id)
+        {
+            var category = _categoryService.GetCategoryById(id);
+
+            return Ok(category);
+        }
+
         [HttpGet("{parentCategoryId}/childCategories")]
         public ActionResult<List<CategoryDto>> GetChildCategories([FromRoute] int parentCategoryId)
         {
@@ -32,13 +41,45 @@ namespace ZleceniaAPI.Controllers
             return Ok(categories);
         }
 
+        [HttpGet("allCategories")]
+        public ActionResult<List<CategoryDto>> GetAllCategories()
+        {
+            var categories = _categoryService.GetAllCategories();
+
+            return Ok(categories);
+        }
+
+
         [HttpPost("user/add")]
         [Authorize(Policy = "IsContractor")]
         public ActionResult AddUserCategories([FromBody] CreateUserCategoryDto dto)
         {
-            _categoryService.AddUserCategories(dto);
+            try
+            {
+                _categoryService.AddUserCategories(dto);
 
-            return Ok();
+                return Ok();
+            } catch(BadRequestException ex)
+            {
+                return BadRequest(ex);
+            }
+            
+        }
+
+        [HttpGet("userCategories")]
+        public ActionResult<List<UserCategoryDto>> GetCategoriesByContractor()
+        {
+            var categories = _categoryService.GetCategoriesByContractor();
+
+            return Ok(categories);
+        }
+
+        [HttpDelete("delete/{userCategoryId}")]
+        [Authorize]
+        public ActionResult<UserCategoryDto> DeleteUserCategory([FromRoute] int userCategoryId) { 
+            var cat = _categoryService.DeleteUserCategory(userCategoryId);
+        
+            return Ok(cat);
         }
 
     }
