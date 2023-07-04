@@ -18,10 +18,10 @@ namespace ZleceniaAPI.Models.Validators
                 enums.Add(v.ToString());
             }
 
-            RuleFor(dto => dto.Voivodeship)
-                .Must((dto, voivodeship) => (!string.IsNullOrEmpty(voivodeship) && string.IsNullOrEmpty(dto.WholeCountry) && enums.Contains(voivodeship))
-                                          || (string.IsNullOrEmpty(voivodeship) && !string.IsNullOrEmpty(dto.WholeCountry)))
-                .WithMessage("Musisz wybrać konkretne województwo lub cały kraj.");
+            //RuleFor(dto => dto.Voivodeship)
+            //    .Must((dto, voivodeship) => (!string.IsNullOrEmpty(voivodeship) && string.IsNullOrEmpty(dto.WholeCountry) && enums.Contains(voivodeship))
+            //                              || (string.IsNullOrEmpty(voivodeship) && !string.IsNullOrEmpty(dto.WholeCountry)))
+            //    .WithMessage("Musisz wybrać konkretne województwo lub cały kraj.");
 
             RuleFor(dto => dto.Categories)
                 .NotEmpty()
