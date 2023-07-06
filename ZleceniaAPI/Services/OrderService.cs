@@ -136,6 +136,12 @@ namespace ZleceniaAPI.Services
                     .Where(r => r.Address.Voivodeship == query.Voivodeship);
             }
 
+            if(query.City is not null)
+            {
+                baseQuery = baseQuery
+                    .Where(r => r.Address.City.Contains(query.City));
+            }
+
             if(query.SearchText is not null)
             {
                 baseQuery = baseQuery
