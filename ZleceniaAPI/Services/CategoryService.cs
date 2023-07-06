@@ -4,7 +4,6 @@ using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using ZleceniaAPI.Entities;
 using ZleceniaAPI.Exceptions;
-using ZleceniaAPI.Migrations;
 using ZleceniaAPI.Models;
 
 namespace ZleceniaAPI.Services
@@ -114,6 +113,15 @@ namespace ZleceniaAPI.Services
                 .Include(c => c.Category)
                 .ThenInclude(p => p.ParentCategory)
                 .ThenInclude(p2 => p2.ParentCategory)
+                .Where(e => e.UserId == userId).ToList());
+
+            return categories;
+        }
+
+        public List<UserCategoryDto> GetCategoriesByUserId(int userId)
+        {
+            var categories = _mapper.Map<List<UserCategoryDto>>(_dbContext.UsersCategories
+                .Include(c => c.Category)
                 .Where(e => e.UserId == userId).ToList());
 
             return categories;

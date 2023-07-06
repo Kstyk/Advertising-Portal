@@ -74,6 +74,14 @@ namespace ZleceniaAPI.Controllers
             return Ok(categories);
         }
 
+        [HttpGet("userCategories/{userId}")]
+        public ActionResult<List<UserCategoryDto>> GetCategoriesByUserId([FromRoute] int userId)
+        {
+            var categories = _categoryService.GetCategoriesByUserId(userId);
+
+            return Ok(categories);
+        }
+
         [HttpDelete("delete/{userCategoryId}")]
         [Authorize]
         public ActionResult<UserCategoryDto> DeleteUserCategory([FromRoute] int userCategoryId) { 
