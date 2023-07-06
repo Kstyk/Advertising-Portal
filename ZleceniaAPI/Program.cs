@@ -2,6 +2,7 @@ using FluentValidation;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using NLog.Web;
 using System.Reflection;
@@ -61,7 +62,7 @@ builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
 builder.Services.AddScoped<UserSeeder>();
 builder.Services.AddScoped<CategorySeeder>();
 
-builder.Services.AddDbContext<OferiaDbContext>();
+builder.Services.AddDbContext<OferiaDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("OferiaDbConnection")));
 builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
 
 builder.Services.AddScoped<IUserContextService, UserContextService>();
