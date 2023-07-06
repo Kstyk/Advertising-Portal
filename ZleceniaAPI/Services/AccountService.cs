@@ -95,6 +95,19 @@ namespace ZleceniaAPI.Services
 
             return tokenHandler.WriteToken(token);
         }
-        
+
+        public UserProfileDto GetLoggedUserProfile()
+        {
+            var userId = _userContextService.GetUserId;
+
+            var userProfile = _mapper.Map<UserProfileDto>(_context.Users
+                .Include(a => a.Address)
+                .Include(s => s.StatusOfUser)
+                .Include(t => t.TypeOfAccount)
+                .FirstOrDefault(u => u.Id == userId));
+
+            return userProfile;
+        }
+
     }
 }

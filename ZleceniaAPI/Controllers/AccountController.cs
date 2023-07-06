@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using ZleceniaAPI.Exceptions;
 using ZleceniaAPI.Models;
 using ZleceniaAPI.Services;
@@ -51,6 +52,15 @@ namespace ZleceniaAPI.Controllers
             var types = _accountService.GetAllTypesOfAccount();
 
             return Ok(types);
+        }
+
+        [HttpGet("loggedProfile")]
+        [Authorize]
+        public ActionResult<UserProfileDto> GetUserProfile()
+        {
+            var userProfile = _accountService.GetLoggedUserProfile();
+
+            return Ok(userProfile);
         }
     }
 }

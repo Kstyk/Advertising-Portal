@@ -55,6 +55,9 @@ namespace ZleceniaAPI
                 .ForMember(r => r.CategoryId, c => c.MapFrom(s => s.CategoryId))
                 .ForMember(r => r.Name, c => c.MapFrom(s => s.Category.Name))
                 .ForMember(r => r.ParentCategory, c => c.MapFrom(s => s.Category.ParentCategory));
+
+            CreateMap<User, UserProfileDto>();
+
         }
     }
 }

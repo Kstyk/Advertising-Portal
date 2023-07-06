@@ -8,5 +8,6 @@ namespace ZleceniaAPI.Services
         string GenerateJwt(LoginUserDto loginUserDto);
         List<StatusOfUserDto> GetAllStatusesOfUser();
         List<TypeOfAccountDto> GetAllTypesOfAccount();
+        UserProfileDto GetLoggedUserProfile();
     }
 }
