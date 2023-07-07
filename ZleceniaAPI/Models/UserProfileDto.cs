@@ -1,4 +1,6 @@
-﻿namespace ZleceniaAPI.Models
+﻿using ZleceniaAPI.Entities;
+
+namespace ZleceniaAPI.Models
 {
     public class UserProfileDto
     {

@@ -25,6 +25,14 @@ namespace ZleceniaAPI.Controllers
             return Ok();
         }
 
+        [HttpPut("edit")]
+        public ActionResult EditUser([FromBody] EditUserDto dto)
+        {
+            _accountService.EditUser(dto);
+
+            return Ok();
+        }
+
         [HttpPost("login")]
         public ActionResult LoginUser([FromBody] LoginUserDto dto) {
             try
@@ -61,6 +69,14 @@ namespace ZleceniaAPI.Controllers
             var userProfile = _accountService.GetLoggedUserProfile();
 
             return Ok(userProfile);
+        }
+
+        [HttpGet("areaOfWork")]
+        public ActionResult<AreaOfWorkDto> GetUserAreaOfWork()
+        {
+            var areaOfWork = _accountService.GetUserAreaOfWork(null);
+
+            return Ok(areaOfWork);
         }
     }
 }

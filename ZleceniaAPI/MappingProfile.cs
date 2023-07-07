@@ -26,6 +26,8 @@ namespace ZleceniaAPI
                     BuildingNumber = dto.BuildingNumber
                 }));
 
+            CreateMap<EditUserDto, User>();
+
             CreateMap<AddOrderDto, Order>()
                 .ForMember(r => r.Address, c => c.MapFrom(dto => new Address()
                 {
@@ -57,6 +59,7 @@ namespace ZleceniaAPI
                 .ForMember(r => r.ParentCategory, c => c.MapFrom(s => s.Category.ParentCategory));
 
             CreateMap<User, UserProfileDto>();
+            CreateMap<AreaOfWork, AreaOfWorkDto>();
 
         }
     }

@@ -75,6 +75,7 @@ builder.Services.AddHostedService<OrderStatusBackgroundService>();
 
 
 builder.Services.AddScoped<IValidator<RegisterUserDto>, RegisterUserDtoValidator>();
+builder.Services.AddScoped<IValidator<EditUserDto>, EditUserValidator>();
 builder.Services.AddScoped<IValidator<CreateUserCategoryDto>, CreateUseCategoryDtoValidator>();
 builder.Services.AddScoped<IValidator<AddOrderDto>, AddOrderDtoValidator>();
 builder.Services.AddScoped<IValidator<AddOfferDto>, AddOfferDtoValidator>();
