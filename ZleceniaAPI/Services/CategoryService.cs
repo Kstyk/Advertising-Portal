@@ -127,7 +127,7 @@ namespace ZleceniaAPI.Services
             return categories;
         }
 
-        public UserCategoryDto DeleteUserCategory(int userCategoryId)
+        public UserCategoryDto? DeleteUserCategory(int userCategoryId)
         {
             var userId = _userContextService.GetUserId;
             

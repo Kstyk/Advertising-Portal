@@ -13,6 +13,6 @@ namespace ZleceniaAPI.Services
         CategoryDto GetCategoryById(int id);
         List<UserCategoryDto> GetCategoriesByContractor();
         List<UserCategoryDto> GetCategoriesByUserId(int userId);
-        UserCategoryDto DeleteUserCategory(int categoryId);
+        UserCategoryDto? DeleteUserCategory(int categoryId);
     }
 }
