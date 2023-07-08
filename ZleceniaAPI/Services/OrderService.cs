@@ -112,6 +112,22 @@ namespace ZleceniaAPI.Services
             return result;
         }
 
+        public OfferDto? DeleteOffer(int offerId)
+        {
+            var userId = _userContextService.GetUserId;
+
+            var offer = _dbContext.Offers
+                .FirstOrDefault(of => of.UserId == userId && of.Id == offerId);
+
+            if (offer != null)
+            {
+                _dbContext.Offers.Remove(offer);
+                _dbContext.SaveChanges();
+                return _mapper.Map<OfferDto>(offer);
+            }
+            return null;
+        }
+
         public PagedResult<OrderDto> GetAll(OrderQuery? query)
         {
             var baseQuery = _dbContext
@@ -170,7 +186,59 @@ namespace ZleceniaAPI.Services
             return result;
         }
 
-        public async Task CheckAndUpdateOrderStatus()
+        public PagedResult<OfferByContractorDto> GetAllOffersFromUser(OfferQuery? query)
+        {
+            var userId = _userContextService.GetUserId;
+
+            var baseQuery = _dbContext.Offers
+                .Include(o => o.Order)
+                .Include(c => c.Order.Category)
+                .Where(r => r.UserId == userId);
+
+            if(query.IsActive is not null)
+            {
+                baseQuery = baseQuery.Where(r => r.Order.IsActive == query.IsActive);
+            }
+
+            var columnsSelectors = new Dictionary<string, Expression<Func<Offer, object>>> {
+                    { nameof(Offer.PublicDate), r => r.PublicDate}
+                };
+
+            var selectedColumn = columnsSelectors[query.SortBy];
+
+            baseQuery = query.SortDirection == SortDirection.ASC ?
+                baseQuery.OrderBy(selectedColumn) :
+                baseQuery.OrderByDescending(selectedColumn);
+
+            var offers = baseQuery
+                .Skip(query.PageSize * (query.PageNumber - 1))
+                .Take(query.PageSize)
+                .ToList();
+
+            var offersDto = _mapper.Map<List<OfferByContractorDto>>(offers);
+
+            var result = new PagedResult<OfferByContractorDto>(offersDto, baseQuery.Count(), query.PageSize, query.PageNumber);
+
+            return result;
+        }
+
+        public void EditOffer(int offerId, AddOfferDto dto)
+        {
+            var offer = _dbContext.Offers.FirstOrDefault(offer => offer.Id == offerId);
+
+            if (offer == null)
+            {
+                throw new BadRequestException("Nie ma oferty o takim ID.");
+            }
+
+            var editOffer = _mapper.Map<AddOfferDto, Offer>(dto, offer);
+            editOffer.PublicDate = DateTime.Now;
+
+            _dbContext.Offers.Update(editOffer);
+            _dbContext.SaveChanges();
+        }
+
+            public async Task CheckAndUpdateOrderStatus()
         {
             var currentDate = DateTime.UtcNow.Date;
 

@@ -71,5 +71,40 @@ namespace ZleceniaAPI.Controllers
 
             return Ok(ordersDtos);
         }
+
+        [HttpGet("offers/all")]
+        [Authorize(Policy = "IsContractor")]
+        public ActionResult<IEnumerable<OfferByContractorDto>> GetAllOffersFromOneUser([FromQuery] OfferQuery? query)
+        {
+            var offersDtos = _orderService.GetAllOffersFromUser(query);
+
+            return Ok(offersDtos);
+        }
+
+        [HttpDelete("delete-offer/{offerId}")]
+        [Authorize(Policy = "IsContractor")]
+        public ActionResult<OfferByContractorDto> DeleteOffer([FromRoute] int offerId)
+        {
+            var offer = _orderService.DeleteOffer(offerId);
+
+            return Ok(offer);
+        }
+
+
+        [HttpPut("edit-offer/{offerId}")]
+        [Authorize(Policy = "IsContractor")]
+        public ActionResult<OfferDto> EditOffer([FromRoute] int offerId, [FromBody] AddOfferDto dto)
+        {
+            try
+            {
+                _orderService.EditOffer(offerId, dto);
+            } catch (BadRequestException ex)
+            {
+                return NotFound(ex.Message);
+            }
+             
+            return Ok();
+        }
+
     }
 }

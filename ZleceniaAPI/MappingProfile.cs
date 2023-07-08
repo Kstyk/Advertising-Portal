@@ -41,6 +41,15 @@ namespace ZleceniaAPI
             CreateMap<AddOfferDto, Offer>();
 
             CreateMap<Order, OrderDto>();
+            CreateMap<Offer, OfferByContractorDto>()
+                .ForMember(r => r.OrderId, c => c.MapFrom(o => o.Order.Id))
+                .ForMember(r => r.OrderTitle, c => c.MapFrom(o => o.Order.Title))
+                .ForMember(r => r.Category, c => c.MapFrom(o => o.Order.Category))
+                .ForMember(r => r.AllowRemotely, c => c.MapFrom(o => o.Order.AllowRemotely))
+                .ForMember(r => r.IsActive, c => c.MapFrom(o => o.Order.IsActive))
+                .ForMember(r => r.StartDate, c => c.MapFrom(o => o.Order.StartDate))
+                .ForMember(r => r.PublicationDays, c => c.MapFrom(o => o.Order.PublicationDays));
+
             CreateMap<Offer, OfferDto>()
                 .ForMember(r => r.FirstName, c => c.MapFrom(s => s.User.FirstName))
                 .ForMember(r => r.LastName, c => c.MapFrom(s => s.User.LastName))
