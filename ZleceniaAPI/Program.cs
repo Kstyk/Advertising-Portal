@@ -25,7 +25,6 @@ builder.Host.UseNLog();
 var authenticationSettings = new AuthenticationSettings();
 builder.Configuration.GetSection("Authentication").Bind(authenticationSettings);
 
-
 builder.Services.AddSingleton(authenticationSettings);
 
 builder.Services.AddAuthentication(option =>
@@ -71,6 +70,7 @@ builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<IAccountService, AccountService>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<IOrderService, OrderService>();
+builder.Services.AddScoped<IContractorService, ContractorService>();
 builder.Services.AddHostedService<OrderStatusBackgroundService>();
 
 
