@@ -69,6 +69,9 @@ namespace ZleceniaAPI
 
             CreateMap<User, UserProfileDto>();
             CreateMap<AreaOfWork, AreaOfWorkDto>();
+      
+            CreateMap<AddCategoryDto, Category>();
+            CreateMap<User, ContractorDto>();
 
         }
     }
