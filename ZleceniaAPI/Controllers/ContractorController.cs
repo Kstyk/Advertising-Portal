@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using ZleceniaAPI.Models;
 using ZleceniaAPI.Services;
 
@@ -23,6 +24,22 @@ namespace ZleceniaAPI.Controllers
             var result = _contractorService.GetAllContractors(query);
 
             return Ok(result);
+        }
+
+        [HttpGet("{contractorId}")]
+        public ActionResult<UserProfileDto> GetUserProfile([FromRoute] int contractorId)
+        {
+            var userProfile = _contractorService.GetContractorProfile(contractorId);
+
+            return Ok(userProfile);
+        }
+
+        [HttpGet("{contractorId}/areaOfWork")]
+        public ActionResult<AreaOfWorkDto> GetUserAreaOfWork([FromRoute] int contractorId)
+        {
+            var areaOfWork = _contractorService.GetContractorAreaOfWork(contractorId);
+
+            return Ok(areaOfWork);
         }
     }
 }

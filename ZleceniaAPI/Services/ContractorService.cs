@@ -66,35 +66,35 @@ namespace ZleceniaAPI.Services
                 baseQuery.OrderBy(selectedColumn) :
                 baseQuery.OrderByDescending(selectedColumn);
 
-            var usersBeforePagination = _mapper.Map<List<ContractorDto>>(baseQuery);
-
             var users = baseQuery
                 .Skip(query.PageSize * (query.PageNumber - 1))
                 .Take(query.PageSize)
                 .ToList();
 
-
             var usersDto = _mapper.Map<List<ContractorDto>>(users);
 
-            List<UserCategoryDto> listOfCategories = new List<UserCategoryDto>();
-
-            foreach (var user in usersBeforePagination)
-            {
-                var list = _categoryService.GetCategoriesByUserId(user.Id);
-                foreach(var category in list)
-                {
-                    if (!listOfCategories.Any(x => x.CategoryId == category.CategoryId))
-                    {
-                        listOfCategories.Add(category);
-                    }
-                }
-            }
-
-            listOfCategories = listOfCategories.OrderBy((cat) => cat.Name).ToList();
-
-            var result = new PagedResult<ContractorDto>(usersDto, listOfCategories, baseQuery.Count(), query.PageSize, query.PageNumber);
+            var result = new PagedResult<ContractorDto>(usersDto, baseQuery.Count(), query.PageSize, query.PageNumber);
 
             return result;
+        }
+
+        public UserProfileDto GetContractorProfile(int contractorId)
+        {
+            var userProfile = _mapper.Map<UserProfileDto>(_dbContext.Users
+                .Include(a => a.Address)
+                .Include(s => s.StatusOfUser)
+                .Include(t => t.TypeOfAccount)
+                .FirstOrDefault(u => u.Id == contractorId));
+
+            return userProfile;
+        }
+
+        public AreaOfWorkDto GetContractorAreaOfWork(int contractorId)
+        {
+            var areaOfWork = _mapper.Map<AreaOfWorkDto>(
+                _dbContext.AreaOfWorks.FirstOrDefault(a => a.UserId == contractorId));
+
+            return areaOfWork;
         }
     }
 }
