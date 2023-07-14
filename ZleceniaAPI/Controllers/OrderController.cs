@@ -72,14 +72,23 @@ namespace ZleceniaAPI.Controllers
             return Ok(ordersDtos);
         }
 
-        [HttpGet("offers/all")]
-        [Authorize(Policy = "IsContractor")]
-        public ActionResult<IEnumerable<OfferByContractorDto>> GetAllOffersFromOneUser([FromQuery] OfferQuery? query)
+        [HttpGet("{orderId}/offers")]
+        [Authorize(Policy = "IsPrincipal")]
+        public ActionResult<IEnumerable<OfferDto>> GetAllOffersToOrder([FromRoute] int orderId)
         {
-            var offersDtos = _orderService.GetAllOffersFromUser(query);
+            try
+            {
+                var offersDtos = _orderService.GetAllOffersToOrder(orderId);
 
-            return Ok(offersDtos);
-        }
+                return Ok(offersDtos);
+            } catch(BadRequestException ex)
+            {
+                return NotFound(ex);
+            } catch(UnauthorizedAccessException ex)
+            {
+                return Forbid();
+            }
+            }
 
         [HttpDelete("delete-offer/{offerId}")]
         [Authorize(Policy = "IsContractor")]
@@ -88,6 +97,15 @@ namespace ZleceniaAPI.Controllers
             var offer = _orderService.DeleteOffer(offerId);
 
             return Ok(offer);
+        }
+
+        [HttpGet("offers/all")]
+        [Authorize(Policy = "IsContractor")]
+        public ActionResult<IEnumerable<OfferByContractorDto>> GetAllOffersFromOneUser([FromQuery] OfferQuery? query)
+        {
+            var offersDtos = _orderService.GetAllOffersFromUser(query);
+
+            return Ok(offersDtos);
         }
 
 

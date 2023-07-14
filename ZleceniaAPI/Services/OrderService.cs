@@ -238,6 +238,30 @@ namespace ZleceniaAPI.Services
             _dbContext.SaveChanges();
         }
 
+        public List<OfferDto> GetAllOffersToOrder(int orderId)
+        {
+            var userId = _userContextService.GetUserId;
+            var order = _dbContext.Orders.FirstOrDefault(o => o.Id == orderId);
+
+            if(order == null)
+            {
+                throw new BadRequestException("Nie ma zlecenia o tym Id.");
+            }
+
+            if(order.UserId != userId)
+            {
+                throw new UnauthorizedAccessException("To nie jest twoje zlecenie.");
+            }
+
+
+            var list = _dbContext.Offers.Include(u => u.User).Where(r => r.OrderId == orderId).ToList();
+
+            List<OfferDto> resultList = _mapper.Map<List<OfferDto>>(list);
+
+            return resultList;
+        }
+
+
             public async Task CheckAndUpdateOrderStatus()
         {
             var currentDate = DateTime.UtcNow.Date;
