@@ -102,6 +102,11 @@ namespace ZleceniaAPI.Entities
                 .Property(e => e.Title)
                 .IsRequired()
                 .HasMaxLength(255);
+            modelBuilder.Entity<Order>()
+               .HasOne(e => e.WinnerOffer)
+               .WithMany()
+               .HasForeignKey(e => e.WinnerOfferId)
+               .OnDelete(DeleteBehavior.NoAction);
 
             // Offer
             modelBuilder.Entity<Offer>()

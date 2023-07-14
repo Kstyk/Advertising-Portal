@@ -17,5 +17,7 @@
         public DateTime StartDate { get; set; }
         public virtual List<Offer> Offers{ get; set; }
         public bool IsActive { get; set; } = true;
+        public int? WinnerOfferId { get; set; } = null;
+        public virtual Offer? WinnerOffer { get; set; }
     }
 }
