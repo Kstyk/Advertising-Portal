@@ -12,7 +12,7 @@ namespace ZleceniaAPI.Models
         public string? City { get; set; } = null;
         public string? SortBy { get; set; } = "StartDate";
         public string? SearchText { get; set; }
-        public Boolean IsActive { get; set; } = true;
+        public Boolean? IsActive { get; set; }
         public SortDirection? SortDirection { get; set; }
     }
 }

@@ -72,6 +72,15 @@ namespace ZleceniaAPI.Controllers
             return Ok(ordersDtos);
         }
 
+        [HttpGet("logged-user/orders")]
+        [Authorize(Policy = "IsPrincipal")]
+        public ActionResult<IEnumerable<OrderDto>> GetAllOrdersFromUser([FromQuery] OrderQuery? query)
+        {
+            var ordersDtos = _orderService.GetUserOrders(query);
+
+            return Ok(ordersDtos);
+        }
+
         [HttpGet("{orderId}/offers")]
         [Authorize(Policy = "IsPrincipal")]
         public ActionResult<IEnumerable<OfferDto>> GetAllOffersToOrder([FromRoute] int orderId)
@@ -122,6 +131,21 @@ namespace ZleceniaAPI.Controllers
             }
              
             return Ok();
+        }
+
+        [HttpPut("{orderId}/set-winner/{offerId}")]
+        [Authorize(Policy = "IsPrincipal")]
+        public ActionResult<OfferDto> SetWinner([FromRoute] int orderId, [FromRoute] int offerId)
+        {
+            try
+            {
+                var dto = _orderService.SetWinnerOfferForOrder(orderId, offerId);
+
+                return Ok(dto);
+            }catch(Exception ex)
+            {
+                return BadRequest(ex);
+            }
         }
 
     }

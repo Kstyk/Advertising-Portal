@@ -13,5 +13,7 @@ namespace ZleceniaAPI.Services
         Task CheckAndUpdateOrderStatus();
         void EditOffer(int offerId, AddOfferDto dto);
         List<OfferDto> GetAllOffersToOrder(int orderId);
+        OfferDto SetWinnerOfferForOrder(int orderId, int offerId);
+        PagedResult<OrderDto> GetUserOrders(OrderQuery? query);
     }
 }

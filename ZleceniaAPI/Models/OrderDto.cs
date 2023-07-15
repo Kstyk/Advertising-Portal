@@ -1,4 +1,5 @@
-﻿using ZleceniaAPI.Entities;
+﻿using Newtonsoft.Json;
+using ZleceniaAPI.Entities;
 
 namespace ZleceniaAPI.Models
 {
@@ -16,5 +17,6 @@ namespace ZleceniaAPI.Models
         public DateTime StartDate { get; set; }
         public Boolean IsActive { get; set; }
         public virtual List<OfferDto> Offers { get; set; }
+        public int? WinnerOfferId { get; set; }
     }
 }

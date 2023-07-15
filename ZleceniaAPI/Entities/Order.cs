@@ -1,4 +1,6 @@
-﻿namespace ZleceniaAPI.Entities
+﻿using Newtonsoft.Json;
+
+namespace ZleceniaAPI.Entities
 {
     public class Order
     {

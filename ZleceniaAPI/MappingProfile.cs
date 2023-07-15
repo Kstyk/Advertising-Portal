@@ -51,6 +51,7 @@ namespace ZleceniaAPI
                 .ForMember(r => r.PublicationDays, c => c.MapFrom(o => o.Order.PublicationDays));
 
             CreateMap<Offer, OfferDto>()
+                .ForMember(r => r.UserId, c => c.MapFrom(s => s.User.Id))
                 .ForMember(r => r.FirstName, c => c.MapFrom(s => s.User.FirstName))
                 .ForMember(r => r.LastName, c => c.MapFrom(s => s.User.LastName))
                 .ForMember(r => r.Email, c => c.MapFrom(s => s.User.Email))

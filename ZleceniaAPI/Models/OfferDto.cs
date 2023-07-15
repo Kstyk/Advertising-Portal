@@ -5,6 +5,7 @@ namespace ZleceniaAPI.Models
     public class OfferDto
     {
         public int Id { get; set; }
+        public int UserId { get; set; }
         public string Email { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
@@ -14,5 +15,6 @@ namespace ZleceniaAPI.Models
         public Decimal? Price { get; set; }
         public string? PriceFor { get; set; } // całość, za godzinę, za sztukę
         public DateTime PublicDate { get; set; }
+        public Boolean? IsWinner { get; set; }
     }
 }

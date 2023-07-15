@@ -11,5 +11,6 @@
         public int OrderId { get; set; }
         public virtual Order Order { get; set; }
         public DateTime PublicDate { get; set; }
+        public Boolean? IsWinner { get; set; } = null;
     }
 }

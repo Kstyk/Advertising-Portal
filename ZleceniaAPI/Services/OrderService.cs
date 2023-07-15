@@ -135,6 +135,7 @@ namespace ZleceniaAPI.Services
                 .Include(r => r.User)
                 .Include(r => r.Address)
                 .Include(r => r.Category)
+                .Include(r => r.WinnerOffer)
                 .Include(r => r.Offers)
                 .Where(r => r.IsActive == query.IsActive);
 
@@ -261,8 +262,77 @@ namespace ZleceniaAPI.Services
             return resultList;
         }
 
+        public OfferDto SetWinnerOfferForOrder(int orderId, int offerId) {
+            var userId = _userContextService.GetUserId;
+            var order = _dbContext.Orders.FirstOrDefault(o => o.Id == orderId);
 
-            public async Task CheckAndUpdateOrderStatus()
+            var offer = _dbContext.Offers
+                .Include(u => u.User)
+                .FirstOrDefault(o => o.Id == offerId);
+
+            if(order != null && order.UserId == userId && offer != null && offer.OrderId ==  orderId)
+            {
+                order.WinnerOfferId = offerId;
+                offer.IsWinner = true;
+
+                if(order.IsActive)
+                {
+                    order.IsActive = false;
+                }
+                
+                _dbContext.Update(order);
+                _dbContext.Update(offer);
+                _dbContext.SaveChanges();
+
+                var offerdto = _mapper.Map<OfferDto>(offer);
+
+                return offerdto;
+            }
+
+            return null;
+        }
+
+        public PagedResult<OrderDto> GetUserOrders(OrderQuery? query)
+        {
+            var userId = _userContextService.GetUserId;
+
+            var baseQuery = _dbContext
+                .Orders
+                .Include(r => r.User)
+                .Include(r => r.Address)
+                .Include(r => r.Category)
+                .Include(r => r.WinnerOffer)
+                .Include(r => r.Offers)
+                .Where(o => o.UserId == userId);
+
+            if (query.IsActive != null)
+            {
+                baseQuery = baseQuery.Where(r => r.IsActive == query.IsActive);
+            } 
+
+            var columnsSelectors = new Dictionary<string, Expression<Func<Order, object>>> {
+                    { nameof(Order.StartDate), r => r.StartDate }
+                };
+
+            var selectedColumn = columnsSelectors[query.SortBy];
+
+            baseQuery = query.SortDirection == SortDirection.ASC ?
+                baseQuery.OrderBy(selectedColumn) :
+                baseQuery.OrderByDescending(selectedColumn);
+
+            var orders = baseQuery
+                .Skip(query.PageSize * (query.PageNumber - 1))
+                .Take(query.PageSize)
+                .ToList();
+
+            var ordersDto = _mapper.Map<List<OrderDto>>(orders);
+
+            var result = new PagedResult<OrderDto>(ordersDto, baseQuery.Count(), query.PageSize, query.PageNumber);
+
+            return result;
+        }
+
+        public async Task CheckAndUpdateOrderStatus()
         {
             var currentDate = DateTime.UtcNow.Date;
 
