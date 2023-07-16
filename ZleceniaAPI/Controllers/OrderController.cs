@@ -83,11 +83,11 @@ namespace ZleceniaAPI.Controllers
 
         [HttpGet("{orderId}/offers")]
         [Authorize(Policy = "IsPrincipal")]
-        public ActionResult<IEnumerable<OfferDto>> GetAllOffersToOrder([FromRoute] int orderId)
+        public ActionResult<IEnumerable<OfferDto>> GetAllOffersToOrder([FromRoute] int orderId, [FromQuery] OfferQuery? query)
         {
             try
             {
-                var offersDtos = _orderService.GetAllOffersToOrder(orderId);
+                var offersDtos = _orderService.GetAllOffersToOrder(orderId, query);
 
                 return Ok(offersDtos);
             } catch(BadRequestException ex)
@@ -145,6 +145,19 @@ namespace ZleceniaAPI.Controllers
             }catch(Exception ex)
             {
                 return BadRequest(ex);
+            }
+        }
+
+        [HttpGet("{orderId}/get-winner")]
+        public ActionResult<OfferDto> GetWinner([FromRoute] int orderId)
+        {
+            try
+            {
+                var dto = _orderService.GetWinnerOfferForOrder(orderId);
+                return Ok(dto);
+            } catch(BadRequestException ex)
+            {
+                return NotFound(ex);
             }
         }
 

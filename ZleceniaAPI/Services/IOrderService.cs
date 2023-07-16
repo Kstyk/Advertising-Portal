@@ -12,8 +12,9 @@ namespace ZleceniaAPI.Services
         OfferDto? DeleteOffer(int offerId);
         Task CheckAndUpdateOrderStatus();
         void EditOffer(int offerId, AddOfferDto dto);
-        List<OfferDto> GetAllOffersToOrder(int orderId);
+        PagedResult<OfferDto> GetAllOffersToOrder(int orderId, OfferQuery? query);
         OfferDto SetWinnerOfferForOrder(int orderId, int offerId);
+        OfferDto GetWinnerOfferForOrder(int orderId);
         PagedResult<OrderDto> GetUserOrders(OrderQuery? query);
     }
 }

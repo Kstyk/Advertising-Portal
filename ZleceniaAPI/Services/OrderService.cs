@@ -166,7 +166,9 @@ namespace ZleceniaAPI.Services
             }
 
             var columnsSelectors = new Dictionary<string, Expression<Func<Order, object>>> {
-                    { nameof(Order.StartDate), r => r.StartDate }
+                    { nameof(Order.StartDate), r => r.StartDate },
+                    {nameof(Order.Title), r => r.Title },
+                    {nameof(Order.Budget), r => r.Budget }
                 };
 
             var selectedColumn = columnsSelectors[query.SortBy];
@@ -239,12 +241,13 @@ namespace ZleceniaAPI.Services
             _dbContext.SaveChanges();
         }
 
-        public List<OfferDto> GetAllOffersToOrder(int orderId)
+        public PagedResult<OfferDto> GetAllOffersToOrder(int orderId, OfferQuery? query)
         {
             var userId = _userContextService.GetUserId;
             var order = _dbContext.Orders.FirstOrDefault(o => o.Id == orderId);
 
-            if(order == null)
+            
+            if (order == null)
             {
                 throw new BadRequestException("Nie ma zlecenia o tym Id.");
             }
@@ -255,11 +258,36 @@ namespace ZleceniaAPI.Services
             }
 
 
-            var list = _dbContext.Offers.Include(u => u.User).Where(r => r.OrderId == orderId).ToList();
+            var baseQuery = _dbContext.Offers
+                .Include(u => u.User)
+                .Where(r => r.OrderId == orderId);
 
-            List<OfferDto> resultList = _mapper.Map<List<OfferDto>>(list);
+            if (query.IsActive is not null)
+            {
+                baseQuery = baseQuery.Where(r => r.Order.IsActive == query.IsActive);
+            }
 
-            return resultList;
+
+            var columnsSelectors = new Dictionary<string, Expression<Func<Offer, object>>> {
+                    { nameof(Offer.PublicDate), r => r.PublicDate}
+                };
+
+            var selectedColumn = columnsSelectors[query.SortBy];
+
+            baseQuery = query.SortDirection == SortDirection.ASC ?
+                baseQuery.OrderBy(selectedColumn) :
+                baseQuery.OrderByDescending(selectedColumn);
+
+            var offers = baseQuery
+                .Skip(query.PageSize * (query.PageNumber - 1))
+                .Take(query.PageSize)
+                .ToList();
+
+            var offersDto = _mapper.Map<List<OfferDto>>(offers);
+
+            var result = new PagedResult<OfferDto>(offersDto, baseQuery.Count(), query.PageSize, query.PageNumber);
+
+            return result;
         }
 
         public OfferDto SetWinnerOfferForOrder(int orderId, int offerId) {
@@ -292,6 +320,22 @@ namespace ZleceniaAPI.Services
             return null;
         }
 
+        public OfferDto GetWinnerOfferForOrder(int orderId)
+        {
+            var order = _dbContext.Orders.FirstOrDefault(o => o.Id == orderId);
+
+            if(order  == null)
+            {
+                throw new BadRequestException("Nie ma zlecenia o takim ID.");
+            }
+
+            var offer = _mapper.Map<OfferDto>(_dbContext.Offers
+                .Include(u => u.User)
+                .FirstOrDefault(o => o.Id == order.WinnerOfferId));
+
+            return offer;
+        }
+
         public PagedResult<OrderDto> GetUserOrders(OrderQuery? query)
         {
             var userId = _userContextService.GetUserId;
@@ -311,7 +355,9 @@ namespace ZleceniaAPI.Services
             } 
 
             var columnsSelectors = new Dictionary<string, Expression<Func<Order, object>>> {
-                    { nameof(Order.StartDate), r => r.StartDate }
+                    { nameof(Order.StartDate), r => r.StartDate },
+                    {nameof(Order.Title), r => r.Title },
+                    {nameof(Order.Budget), r => r.Budget }
                 };
 
             var selectedColumn = columnsSelectors[query.SortBy];
