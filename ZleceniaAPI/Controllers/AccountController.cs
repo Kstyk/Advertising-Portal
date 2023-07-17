@@ -62,7 +62,7 @@ namespace ZleceniaAPI.Controllers
             return Ok(types);
         }
 
-        [HttpGet("loggedProfile")]
+        [HttpGet("logged-profile")]
         [Authorize]
         public ActionResult<UserProfileDto> GetUserProfile()
         {
@@ -71,7 +71,7 @@ namespace ZleceniaAPI.Controllers
             return Ok(userProfile);
         }
 
-        [HttpGet("areaOfWork")]
+        [HttpGet("area-of-work")]
         public ActionResult<AreaOfWorkDto> GetUserAreaOfWork()
         {
             var areaOfWork = _accountService.GetUserAreaOfWork(null);
@@ -79,7 +79,7 @@ namespace ZleceniaAPI.Controllers
             return Ok(areaOfWork);
         }
 
-        [HttpPut("areaOfWork/edit")]
+        [HttpPut("area-of-work/edit")]
         [Authorize(Policy = "IsContractor")]
         public ActionResult<AreaOfWorkDto> EditUserAreaOfWork([FromBody] AreaOfWorkDto dto)
         {

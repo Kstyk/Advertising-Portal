@@ -34,7 +34,7 @@ namespace ZleceniaAPI.Controllers
             return Ok(userProfile);
         }
 
-        [HttpGet("{contractorId}/areaOfWork")]
+        [HttpGet("{contractorId}/area-of-work")]
         public ActionResult<AreaOfWorkDto> GetUserAreaOfWork([FromRoute] int contractorId)
         {
             var areaOfWork = _contractorService.GetContractorAreaOfWork(contractorId);

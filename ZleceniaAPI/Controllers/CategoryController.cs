@@ -33,7 +33,7 @@ namespace ZleceniaAPI.Controllers
             return Ok(category);
         }
 
-        [HttpGet("{parentCategoryId}/childCategories")]
+        [HttpGet("{parentCategoryId}/child-categories")]
         public ActionResult<List<CategoryDto>> GetChildCategories([FromRoute] int parentCategoryId)
         {
             var categories = _categoryService.GetChildCategories(parentCategoryId);
@@ -41,7 +41,7 @@ namespace ZleceniaAPI.Controllers
             return Ok(categories);
         }
 
-        [HttpGet("allCategories")]
+        [HttpGet("all-categories")]
         public ActionResult<List<CategoryDto>> GetAllCategories()
         {
             var categories = _categoryService.GetAllCategories();
@@ -66,7 +66,7 @@ namespace ZleceniaAPI.Controllers
             
         }
 
-        [HttpGet("userCategories")]
+        [HttpGet("user-categories")]
         public ActionResult<List<UserCategoryDto>> GetCategoriesByContractor()
         {
             var categories = _categoryService.GetCategoriesByContractor();
@@ -74,7 +74,7 @@ namespace ZleceniaAPI.Controllers
             return Ok(categories);
         }
 
-        [HttpGet("userCategories/{userId}")]
+        [HttpGet("user-categories/{userId}")]
         public ActionResult<List<UserCategoryDto>> GetCategoriesByUserId([FromRoute] int userId)
         {
             var categories = _categoryService.GetCategoriesByUserId(userId);
