@@ -11,5 +11,6 @@ namespace ZleceniaAPI.Services
         List<TypeOfAccountDto> GetAllTypesOfAccount();
         UserProfileDto GetLoggedUserProfile();
         AreaOfWorkDto GetUserAreaOfWork(int? userId);
+        AreaOfWorkDto EditAreaOfWork(AreaOfWorkDto dto);
     }
 }

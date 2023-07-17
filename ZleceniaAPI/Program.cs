@@ -78,7 +78,9 @@ builder.Services.AddScoped<IValidator<RegisterUserDto>, RegisterUserDtoValidator
 builder.Services.AddScoped<IValidator<EditUserDto>, EditUserValidator>();
 builder.Services.AddScoped<IValidator<CreateUserCategoryDto>, CreateUseCategoryDtoValidator>();
 builder.Services.AddScoped<IValidator<AddOrderDto>, AddOrderDtoValidator>();
+builder.Services.AddScoped<IValidator<EditOrderDto>, EditOrderValidator>();
 builder.Services.AddScoped<IValidator<AddOfferDto>, AddOfferDtoValidator>();
+builder.Services.AddScoped<IValidator<AreaOfWorkDto>, AreaOfWorkDtoValidator>();
 
 builder.Services.AddCors(options =>
 {

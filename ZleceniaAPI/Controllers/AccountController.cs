@@ -78,5 +78,13 @@ namespace ZleceniaAPI.Controllers
 
             return Ok(areaOfWork);
         }
+
+        [HttpPut("areaOfWork/edit")]
+        [Authorize(Policy = "IsContractor")]
+        public ActionResult<AreaOfWorkDto> EditUserAreaOfWork([FromBody] AreaOfWorkDto dto)
+        {
+            var areaOfWork = _accountService.EditAreaOfWork(dto);
+            return Ok(areaOfWork);
+        }
     }
 }

@@ -62,12 +62,17 @@ namespace ZleceniaAPI.Services
 
             var address = _context.Addresses.First(a => a.Id == editUser.AddressId);
 
-            address.Voivodeship = dto.Voivodeship;
-            address.City = dto.City;
-            address.Street = dto.Street;
-            address.BuildingNumber = dto.BuildingNumber;
+            if (address != null)
+            {
+                address.Voivodeship = dto.Voivodeship;
+                address.City = dto.City;
+                address.Street = dto.Street;
+                address.BuildingNumber = dto.BuildingNumber;
+                address.PostalCode = dto.PostalCode;
 
-            _context.Addresses.Update(address);
+                _context.Addresses.Update(address);
+            }
+
             _context.Users.Update(editUser);
             _context.SaveChanges();
         }
@@ -138,5 +143,31 @@ namespace ZleceniaAPI.Services
             return areaOfWork;
         } 
 
+        public AreaOfWorkDto EditAreaOfWork(AreaOfWorkDto dto)
+        {
+            var userId = _userContextService.GetUserId;
+            var area = _mapper.Map<AreaOfWork>(dto);
+
+            var areaOfWork = _context.AreaOfWorks.FirstOrDefault(a => a.UserId == userId);
+
+            if(areaOfWork == null)
+            {
+                area.UserId = (int)userId;
+                _context.AreaOfWorks.Add(area);
+                _context.SaveChanges();
+
+                return dto;
+            } else
+            {
+                dto.Id = areaOfWork.Id;
+                areaOfWork.Voivodeship = area.Voivodeship;
+                areaOfWork.WholeCountry = area.WholeCountry;
+
+                _context.AreaOfWorks.Update(areaOfWork);
+                _context.SaveChanges();
+
+                return dto;
+            }
+        }
     }
 }

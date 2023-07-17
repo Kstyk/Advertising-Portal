@@ -70,10 +70,12 @@ namespace ZleceniaAPI
 
             CreateMap<User, UserProfileDto>();
             CreateMap<AreaOfWork, AreaOfWorkDto>();
+            CreateMap<AreaOfWorkDto, AreaOfWork>();
       
             CreateMap<AddCategoryDto, Category>();
             CreateMap<User, ContractorDto>();
 
+            CreateMap<EditOrderDto, Order>();
         }
     }
 }
