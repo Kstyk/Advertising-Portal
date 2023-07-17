@@ -14,5 +14,6 @@
         public string? CompanyName { get; set; }
         public string? TaxIdentificationNumber { get; set; }
         public int StatusOfUserId { get; set; }
+        public int TypeOfAccountId { get; set; }
     }
 }

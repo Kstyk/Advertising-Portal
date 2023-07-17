@@ -48,6 +48,7 @@ namespace ZleceniaAPI.Models.Validators
                 .Cascade(CascadeMode.Stop)
                 .NotNull() // Dodane dla wartości nullable (string?)
                 .NotEmpty()
+                .When(x => x.TypeOfAccountId == 2)
                 .WithMessage("Pole opisu firmy nie może być puste.");
 
             RuleFor(x => x.CompanyName)

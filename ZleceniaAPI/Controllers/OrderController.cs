@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Net;
 using ZleceniaAPI.Exceptions;
 using ZleceniaAPI.Models;
 using ZleceniaAPI.Services;
@@ -31,6 +32,28 @@ namespace ZleceniaAPI.Controllers
             {
                 return NotFound(ex);
             }
+        }
+
+        [HttpPut("{orderId}/edit")]
+        [Authorize(Policy ="IsPrincipal")]
+        public ActionResult EditOrder([FromBody] EditOrderDto dto, [FromRoute] int orderId) {
+            try
+            {
+                _orderService.EditOrder(orderId, dto);
+                return Ok();
+            }
+            catch (BadRequestException ex)
+            {
+                if(ex.StatusCode == HttpStatusCode.Forbidden)
+                {
+                    return new ObjectResult(ex.Message)
+                    {
+                        StatusCode = (int)HttpStatusCode.Forbidden
+                    };
+                }
+                return BadRequest(ex);
+            }
+        
         }
 
         [HttpPost("{orderId}/add-offer")]
@@ -95,7 +118,10 @@ namespace ZleceniaAPI.Controllers
                 return NotFound(ex);
             } catch(UnauthorizedAccessException ex)
             {
-                return Forbid();
+                return new ObjectResult(ex.Message)
+                {
+                    StatusCode = (int)HttpStatusCode.Forbidden
+                };
             }
             }
 

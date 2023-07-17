@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Azure;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration.UserSecrets;
@@ -204,7 +205,8 @@ namespace ZleceniaAPI.Services
             }
 
             var columnsSelectors = new Dictionary<string, Expression<Func<Offer, object>>> {
-                    { nameof(Offer.PublicDate), r => r.PublicDate}
+                    { nameof(Offer.PublicDate), r => r.PublicDate},
+                {nameof(Offer.Price), r => r.Price }
                 };
 
             var selectedColumn = columnsSelectors[query.SortBy];
@@ -241,6 +243,40 @@ namespace ZleceniaAPI.Services
             _dbContext.SaveChanges();
         }
 
+        public void EditOrder(int orderId, EditOrderDto dto)
+        {
+            var userId = _userContextService.GetUserId;
+            var order = _dbContext.Orders.FirstOrDefault(order => order.Id == orderId);
+
+            if (order == null)
+            {
+                throw new BadRequestException("Nie ma zlecenia o takim ID.");
+            }
+
+            if(order.UserId != userId)
+            {
+                throw new BadRequestException("Nie możesz edytować tego zlecenia.", HttpStatusCode.Forbidden);
+            }
+
+            var editOrder = _mapper.Map<EditOrderDto, Order>(dto, order);
+
+            var address = _dbContext.Addresses.FirstOrDefault(address => address.Id == order.AddressId);
+
+            if(address != null) {
+                address.Voivodeship = dto.Voivodeship;
+                address.City = dto.City;
+                address.Street = dto.Street;
+                address.BuildingNumber = dto.BuildingNumber;
+                address.PostalCode = dto.PostalCode;
+
+                _dbContext.Addresses.Update(address);
+            }
+
+
+            _dbContext.Orders.Update(editOrder);
+            _dbContext.SaveChanges();
+        }
+
         public PagedResult<OfferDto> GetAllOffersToOrder(int orderId, OfferQuery? query)
         {
             var userId = _userContextService.GetUserId;
@@ -269,7 +305,8 @@ namespace ZleceniaAPI.Services
 
 
             var columnsSelectors = new Dictionary<string, Expression<Func<Offer, object>>> {
-                    { nameof(Offer.PublicDate), r => r.PublicDate}
+                    { nameof(Offer.PublicDate), r => r.PublicDate},
+                    { nameof(Offer.Price), r => r.Price }
                 };
 
             var selectedColumn = columnsSelectors[query.SortBy];

@@ -16,5 +16,6 @@ namespace ZleceniaAPI.Services
         OfferDto SetWinnerOfferForOrder(int orderId, int offerId);
         OfferDto GetWinnerOfferForOrder(int orderId);
         PagedResult<OrderDto> GetUserOrders(OrderQuery? query);
+        void EditOrder(int orderId, EditOrderDto dto);
     }
 }
