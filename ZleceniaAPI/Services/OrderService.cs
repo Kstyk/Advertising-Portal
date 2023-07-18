@@ -129,7 +129,7 @@ namespace ZleceniaAPI.Services
             return null;
         }
 
-        public PagedResult<OrderDto> GetAll(OrderQuery? query)
+        public PagedResult<OrderDto> GetAll(OrderQuery query)
         {
             var baseQuery = _dbContext
                 .Orders
@@ -168,8 +168,8 @@ namespace ZleceniaAPI.Services
 
             var columnsSelectors = new Dictionary<string, Expression<Func<Order, object>>> {
                     { nameof(Order.StartDate), r => r.StartDate },
-                    {nameof(Order.Title), r => r.Title },
-                    {nameof(Order.Budget), r => r.Budget }
+                    { nameof(Order.Title), r => r.Title },
+                    { nameof(Order.Budget), r => r.Budget }
                 };
 
             var selectedColumn = columnsSelectors[query.SortBy];
@@ -370,6 +370,12 @@ namespace ZleceniaAPI.Services
                 .Include(u => u.User)
                 .FirstOrDefault(o => o.Id == order.WinnerOfferId));
 
+            var ifRated = _dbContext.Opinions.FirstOrDefault(o => o.OfferId == offer.Id);
+
+            if(ifRated != null) {
+                offer.IsRated = true;
+            }
+
             return offer;
         }
 
@@ -413,6 +419,66 @@ namespace ZleceniaAPI.Services
             var result = new PagedResult<OrderDto>(ordersDto, baseQuery.Count(), query.PageSize, query.PageNumber);
 
             return result;
+        }
+
+        public void AddOpinion(int offerId, AddOpinionDto dto)
+        {
+            var userId = _userContextService.GetUserId;
+
+            var offer = _dbContext.Offers.FirstOrDefault(o => o.Id == offerId);
+
+            if(offer == null)
+            {
+                throw new BadRequestException("Nie istnieje oferta o takim ID.");
+            }
+
+            var order = _dbContext.Orders.FirstOrDefault(o => o.Id == offer.OrderId);
+
+            var opinionIfExists = _dbContext.Opinions.FirstOrDefault(o => o.OfferId == offerId);
+
+            if(opinionIfExists != null)
+            {
+                throw new BadRequestException("Już oceniłeś tego wykonawcę za to zlecenie.");
+            }
+
+            if(order.IsActive)
+            {
+                throw new BadRequestException("Nie możesz jeszcze dodać opinii zlekonawcy - twoje zlecenie wciąż trwa.");
+            }
+
+
+            if(!(offer.IsWinner == true && order.WinnerOfferId == offerId))
+            {
+                throw new BadRequestException("Ta oferta nie została wybrana jako wygrana - nie możesz ocenić wykonawcy.");
+            }
+
+            if(order == null)
+            {
+                throw new BadRequestException("Zlecenie o takim ID nie istnieje.");
+            }
+
+            var opinion = _mapper.Map<Opinion>(dto);
+            opinion.OrderId = order.Id;
+            opinion.OfferId = offer.Id;
+            opinion.PrincipalId = (int)userId;
+            opinion.ContractorId = offer.UserId;
+            opinion.FinalRate = (dto.WorkQuality + dto.Punctuality + dto.Communication + dto.MeetingTheConditions) / 4.00;
+            opinion.CreatedAt = DateTime.Now;
+
+            _dbContext.Opinions.Add(opinion);
+            _dbContext.SaveChanges();
+        }
+
+        public List<OpinionDto> GetContractorOpinions(int contractorId)
+        {
+            var opinions = _dbContext.Opinions
+                .Include(r => r.Order)
+                .Include(r => r.Offer)
+                .Where(r => r.ContractorId == contractorId);
+
+            var opinionsDto = _mapper.Map<List<OpinionDto>>(opinions);
+
+            return opinionsDto;
         }
 
         public async Task CheckAndUpdateOrderStatus()

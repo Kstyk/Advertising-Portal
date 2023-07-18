@@ -76,6 +76,10 @@ namespace ZleceniaAPI
             CreateMap<User, ContractorDto>();
 
             CreateMap<EditOrderDto, Order>();
+
+            CreateMap<AddOpinionDto, Opinion>();
+            CreateMap<Opinion, OpinionDto>()
+                .ForMember(r => r.Title, c => c.MapFrom(s => s.Order.Title));
         }
     }
 }

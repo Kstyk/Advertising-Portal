@@ -16,5 +16,6 @@ namespace ZleceniaAPI.Models
         public string? PriceFor { get; set; } // całość, za godzinę, za sztukę
         public DateTime PublicDate { get; set; }
         public Boolean? IsWinner { get; set; }
+        public Boolean? IsRated { get; set; }
     }
 }

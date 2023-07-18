@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ZleceniaAPI.Entities;
 
@@ -11,9 +12,11 @@ using ZleceniaAPI.Entities;
 namespace ZleceniaAPI.Migrations
 {
     [DbContext(typeof(OferiaDbContext))]
-    partial class OferiaDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230718063234_AddOpinionsTable")]
+    partial class AddOpinionsTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -209,7 +212,8 @@ namespace ZleceniaAPI.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ContractorId");
+                    b.HasIndex("ContractorId")
+                        .IsUnique();
 
                     b.HasIndex("OfferId")
                         .IsUnique();
@@ -217,7 +221,8 @@ namespace ZleceniaAPI.Migrations
                     b.HasIndex("OrderId")
                         .IsUnique();
 
-                    b.HasIndex("PrincipalId");
+                    b.HasIndex("PrincipalId")
+                        .IsUnique();
 
                     b.ToTable("Opinions");
                 });
@@ -460,8 +465,8 @@ namespace ZleceniaAPI.Migrations
             modelBuilder.Entity("ZleceniaAPI.Entities.Opinion", b =>
                 {
                     b.HasOne("ZleceniaAPI.Entities.User", "Contractor")
-                        .WithMany()
-                        .HasForeignKey("ContractorId")
+                        .WithOne()
+                        .HasForeignKey("ZleceniaAPI.Entities.Opinion", "ContractorId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
@@ -478,8 +483,8 @@ namespace ZleceniaAPI.Migrations
                         .IsRequired();
 
                     b.HasOne("ZleceniaAPI.Entities.User", "Principal")
-                        .WithMany()
-                        .HasForeignKey("PrincipalId")
+                        .WithOne()
+                        .HasForeignKey("ZleceniaAPI.Entities.Opinion", "PrincipalId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 

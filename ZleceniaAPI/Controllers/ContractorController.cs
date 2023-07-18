@@ -41,5 +41,13 @@ namespace ZleceniaAPI.Controllers
 
             return Ok(areaOfWork);
         }
+
+        [HttpGet("{contractorId}/opinions")]
+        public ActionResult<IEnumerable<OpinionDto>> GetContractorOpinions([FromRoute] int contractorId)
+        {
+            var opinions = _orderService.GetContractorOpinions(contractorId);
+
+            return Ok(opinions);
+        }
     }
 }

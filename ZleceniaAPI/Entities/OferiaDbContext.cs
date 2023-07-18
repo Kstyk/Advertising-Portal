@@ -22,8 +22,7 @@ namespace ZleceniaAPI.Entities
         public DbSet<AreaOfWork> AreaOfWorks { get; set; }
         public DbSet<Order> Orders { get; set; }
         public DbSet<Offer> Offers { get; set; }
-
-
+        public DbSet<Opinion> Opinions { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -124,7 +123,29 @@ namespace ZleceniaAPI.Entities
             modelBuilder.Entity<Offer>()
                 .Property(e => e.PriceFor)
                 .HasMaxLength(50);
-            
+
+            // Opinions
+            modelBuilder.Entity<Opinion>()
+                .Property(e => e.Comment)
+                .HasMaxLength(5000);
+            modelBuilder.Entity<Opinion>()
+                .HasOne<Order>(s => s.Order)
+                .WithOne()
+                .OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<Opinion>()
+                .HasOne<Offer>(s => s.Offer)
+                .WithOne()
+                .OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<Opinion>()
+                .HasOne<User>(s => s.Principal)
+                .WithMany()
+                .HasForeignKey(o => o.PrincipalId)
+                .OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<Opinion>()
+                .HasOne<User>(s => s.Contractor)
+                .WithMany()
+               .HasForeignKey(o => o.ContractorId)
+                .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }

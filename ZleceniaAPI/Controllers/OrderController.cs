@@ -187,5 +187,18 @@ namespace ZleceniaAPI.Controllers
             }
         }
 
+        [HttpPost("{offerId}/add-opinion")]
+        public ActionResult AddOpinion([FromRoute] int offerId, [FromBody] AddOpinionDto dto)
+        {
+            try
+            {
+                _orderService.AddOpinion(offerId, dto);
+                return Ok();
+            } catch(BadRequestException ex)
+            {
+                return BadRequest(ex);
+            }
+        }
+
     }
 }
