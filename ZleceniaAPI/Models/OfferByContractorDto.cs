@@ -14,6 +14,8 @@
         public Boolean IsActive { get; set; }
         public DateTime StartDate { get; set; }
         public int PublicationDays { get; set; }
+        public Boolean? IsWinner { get; set; }
+
 
     }
 }

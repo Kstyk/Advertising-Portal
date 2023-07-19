@@ -4,9 +4,6 @@ namespace ZleceniaAPI.Entities
 {
     public class OferiaDbContext : DbContext
     {
-        //private string _connectionString = "Server=DESKTOP-MCPFS1N;Database=OferiaDb;Trusted_Connection=True;TrustServerCertificate=True;";
-        //private string _connectionString = "Server=DESKTOP-MCPFS1N;Database=OferiaDb;Trusted_Connection=True;TrustServerCertificate=True;";
-
         public OferiaDbContext(DbContextOptions<OferiaDbContext> options) : base(options)
         {
             
@@ -23,6 +20,7 @@ namespace ZleceniaAPI.Entities
         public DbSet<Order> Orders { get; set; }
         public DbSet<Offer> Offers { get; set; }
         public DbSet<Opinion> Opinions { get; set; }
+        public DbSet<ResetPassword> ResetPasswords { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

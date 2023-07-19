@@ -72,6 +72,7 @@ builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<IOrderService, OrderService>();
 builder.Services.AddScoped<IContractorService, ContractorService>();
 builder.Services.AddHostedService<OrderStatusBackgroundService>();
+builder.Services.AddScoped<IPasswordResetService, PasswordResetService>();
 
 
 builder.Services.AddScoped<IValidator<RegisterUserDto>, RegisterUserDtoValidator>();

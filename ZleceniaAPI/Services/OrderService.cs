@@ -84,7 +84,7 @@ namespace ZleceniaAPI.Services
             }
 
             if (order.Offers.Any(of => of.UserId == userId)) {
-                throw new BadRequestException("Już złożyłeś ofertę do tego zlecenia.");
+                throw new BadRequestException("Już złożyłeś ofertę do tego zlecenia.", HttpStatusCode.Conflict);
             }
 
             offer.OrderId = orderId;

@@ -11,10 +11,12 @@ namespace ZleceniaAPI.Controllers
     public class AccountController : ControllerBase
     {
         private IAccountService _accountService;
+        private IPasswordResetService _passwordResetService;
 
-        public AccountController(IAccountService account)
+        public AccountController(IAccountService account, IPasswordResetService passwordResetService)
         {
             _accountService = account;
+            _passwordResetService = passwordResetService;
         }
 
         [HttpPost("register")]
@@ -85,6 +87,33 @@ namespace ZleceniaAPI.Controllers
         {
             var areaOfWork = _accountService.EditAreaOfWork(dto);
             return Ok(areaOfWork);
+        }
+
+        [HttpPost("forgot-password")]
+        public ActionResult ForgotPassword([FromBody] ForgotPasswordDto dto)
+        {
+            try
+            {
+                _passwordResetService.ForgotPassword(dto);
+
+                return Ok();
+            } catch(BadRequestException ex)
+            {
+                return BadRequest(ex);
+            }
+        }
+
+        [HttpPost("reset-password")]
+        public ActionResult ResetPassword([FromBody] ResetPasswordDto dto)
+        {
+            try
+            {
+                _passwordResetService.ResetPassword(dto);
+                return Ok();
+            } catch(BadRequestException ex)
+            {
+                return BadRequest(ex);
+            }
         }
     }
 }

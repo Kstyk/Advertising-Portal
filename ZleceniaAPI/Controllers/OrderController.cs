@@ -70,7 +70,7 @@ namespace ZleceniaAPI.Controllers
                 return NotFound(ex);
             } catch (BadRequestException ex)
             {
-                return BadRequest(ex);
+                return Conflict(ex);
             }
             }
 

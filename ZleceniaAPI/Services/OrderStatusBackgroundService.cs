@@ -27,7 +27,7 @@ namespace ZleceniaAPI.Services
                 _logger.LogInformation("Executed background task");
 
 
-                await Task.Delay(TimeSpan.FromHours(24), stoppingToken);
+                await Task.Delay(TimeSpan.FromMinutes(5), stoppingToken);
             }
         }
     }

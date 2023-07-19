@@ -73,6 +73,11 @@ namespace ZleceniaAPI.Services
 
             var usersDto = _mapper.Map<List<ContractorDto>>(users);
 
+            foreach(var user in usersDto)
+            {
+                user.AverageRate = GetAverageRate(user.Id);
+            }
+
             var result = new PagedResult<ContractorDto>(usersDto, baseQuery.Count(), query.PageSize, query.PageNumber);
 
             return result;
@@ -95,6 +100,25 @@ namespace ZleceniaAPI.Services
                 _dbContext.AreaOfWorks.FirstOrDefault(a => a.UserId == contractorId));
 
             return areaOfWork;
+        }
+
+        private Double? GetAverageRate(int contractorId)
+        {
+            var listOfOpinions = _dbContext.Opinions.Where(r => r.ContractorId == contractorId);
+
+            if(listOfOpinions.Count() == 0)
+            {
+                return null;
+            }
+
+            var sum = 0.00;
+
+            foreach(Opinion o in listOfOpinions)
+            {
+                sum += o.FinalRate;
+            }
+
+            return sum / listOfOpinions.Count();
         }
     }
 }

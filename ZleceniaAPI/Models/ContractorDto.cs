@@ -12,5 +12,6 @@
         public string? TaxIdentificationNumber { get; set; }
         public virtual AddressDto Address { get; set; }
         public virtual List<UserCategoryDto> UserCategories { get; set; }
+        public Double? AverageRate { get; set; }
     }
 }
