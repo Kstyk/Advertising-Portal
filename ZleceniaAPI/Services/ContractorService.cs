@@ -28,12 +28,11 @@ namespace ZleceniaAPI.Services
 
             if (query.CategoryId is not null)
             {
-                var userCategories = _dbContext.UsersCategories
+                var userCategories = _dbContext.UsersCategories.Include(r => r.Category).ThenInclude(r => r.ParentCategory).ThenInclude(r => r.ParentCategory)
                     .Where(r => r.CategoryId == query.CategoryId || r.Category.ParentCategoryId == query.CategoryId
                 || r.Category.ParentCategory.ParentCategoryId == query.CategoryId);
 
                 baseQuery = baseQuery.Where(user => userCategories.Any(uc => uc.UserId == user.Id));
-
             }
 
             if (query.Voivodeship is not null)

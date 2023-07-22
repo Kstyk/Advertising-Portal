@@ -497,5 +497,33 @@ namespace ZleceniaAPI.Services
 
             await _dbContext.SaveChangesAsync();
         }
+
+        public StatisticDto GetStatistics() {
+            StatisticDto dto = new StatisticDto();
+
+            List<Order> orders = _dbContext.Orders.ToList();
+            var sum = 0.00;
+            foreach(var order in orders)
+            {
+                if (order.Budget != null)
+                {
+                    sum = ((double)order.Budget) + sum;
+                }
+            }
+
+            dto.TotalValueOfOrders = (decimal)sum;
+            dto.AmountOfOrders = orders.Count;
+
+            List<User> contractors = _dbContext.Users.Where(u => u.TypeOfAccount.Name == "Wykonawca").ToList();
+            dto.AmountOfContractors = contractors.Count;
+
+            List<Offer> offers = _dbContext.Offers.ToList();
+
+            double avg = (double)offers.Count / (double)orders.Count;
+
+            dto.AverageOffersForOneOrder = (int)Math.Ceiling(avg);
+
+            return dto;
+        }
     }
 }

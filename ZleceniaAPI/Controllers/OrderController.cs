@@ -200,5 +200,18 @@ namespace ZleceniaAPI.Controllers
             }
         }
 
+        [HttpGet("statistics")]
+        public ActionResult<StatisticDto> GetStatistics()
+        {
+            try
+            {
+                var dto = _orderService.GetStatistics();
+                return Ok(dto);
+            } catch(Exception ex)
+            {
+                return BadRequest(ex);
+            }
+        }
+
     }
 }

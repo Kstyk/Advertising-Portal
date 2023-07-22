@@ -93,7 +93,7 @@ namespace ZleceniaAPI.Services
             email.Subject = "Resetowanie hasła";
             email.Body = new TextPart(MimeKit.Text.TextFormat.Html)
             {
-                Text = $"Kliknij <a style='color:darkcyan;' href='http://localhost:5173/reset-password?token={resetToken}'>tutaj</a>, aby zresetować hasło."
+                Text = $"Kliknij <a style='color:darkcyan;' href='https://zlecenia.azurewebsites.net/reset-password?token={resetToken}'>tutaj</a>, aby zresetować hasło."
             };
 
             var smtpSettings = GetSmtpSettingsFromConfig();
