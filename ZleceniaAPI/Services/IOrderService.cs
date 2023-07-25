@@ -20,5 +20,6 @@ namespace ZleceniaAPI.Services
         void AddOpinion(int offerId, AddOpinionDto dto);
         List<OpinionDto> GetContractorOpinions(int contractorId);
         StatisticDto GetStatistics();
+        void EndOrder(int orderId);
     }
 }

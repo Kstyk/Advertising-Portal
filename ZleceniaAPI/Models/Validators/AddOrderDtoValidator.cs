@@ -22,6 +22,7 @@ namespace ZleceniaAPI.Models.Validators
 
             RuleFor(dto => dto.Voivodeship)
                 .Must((dto, voivodeship) => enums.Contains(voivodeship))
+                .When(x => x.AddressId == null)
                 .WithMessage("Niepoprawne województwo.");
 
             RuleFor(dto => dto.Description)

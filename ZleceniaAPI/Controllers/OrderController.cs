@@ -56,6 +56,20 @@ namespace ZleceniaAPI.Controllers
         
         }
 
+        [HttpPut("{orderId}/end-order")]
+        [Authorize(Policy = "IsPrincipal")]
+        public ActionResult EndOrder([FromRoute] int orderId)
+        {
+            try
+            {
+                _orderService.EndOrder(orderId);
+                return Ok();
+            } catch (NullReferenceException ex)
+            {
+                return BadRequest(ex);
+            }
+        }
+
         [HttpPost("{orderId}/add-offer")]
         [Authorize(Policy = "IsContractor")]
         public ActionResult AddOfferToOrder([FromRoute] int orderId, [FromBody] AddOfferDto dto)

@@ -31,7 +31,28 @@ namespace ZleceniaAPI.Services
 
         public void AddNewOrder(AddOrderDto dto)
         {
-            var order = _mapper.Map<Order>(dto);
+            var userId = _userContextService.GetUserId;
+
+            if (userId == null)
+            {
+                throw new BadRequestException("Błędne dane użytkownika.");
+            }
+
+            var order = new Order();
+            if (dto.AddressId == false)
+            {
+                order = _mapper.Map<Order>(dto);
+            } else
+            {
+                var user = _dbContext.Users.FirstOrDefault(u => u.Id == userId);
+                order.AddressId = (int)user.AddressId;
+                order.Title = dto.Title;
+                order.Description = dto.Description;
+                order.PublicationDays = dto.PublicationDays;
+                order.AllowRemotely = dto.AllowRemotely;
+                order.Budget = dto.Budget;
+            }
+
             order.StartDate = DateTime.Now;
 
             var category = _dbContext.Categories.FirstOrDefault(category => category.Id == dto.CategoryId);
@@ -41,12 +62,7 @@ namespace ZleceniaAPI.Services
                 throw new NullReferenceException("Kategoria o ID " + dto.CategoryId + " nie została znaleziona.");
             }
 
-            var userId = _userContextService.GetUserId;
-
-            if (userId == null)
-            {
-                throw new BadRequestException("Błędne dane użytkownika.");
-            }
+            order.CategoryId = category.Id;
 
             order.UserId = (int)userId;
 
@@ -274,6 +290,15 @@ namespace ZleceniaAPI.Services
 
 
             _dbContext.Orders.Update(editOrder);
+            _dbContext.SaveChanges();
+        }
+
+        public void EndOrder(int orderId)
+        {
+            var order = _dbContext.Orders.FirstOrDefault(o => o.Id == orderId);
+            order.IsActive = false;
+
+            _dbContext.Update(order);
             _dbContext.SaveChanges();
         }
 
@@ -519,9 +544,16 @@ namespace ZleceniaAPI.Services
 
             List<Offer> offers = _dbContext.Offers.ToList();
 
-            double avg = (double)offers.Count / (double)orders.Count;
+            if (orders.Count == 0)
+            {
+                dto.AverageOffersForOneOrder = 0;
+            }
+            else
+            {
+                double avg = (double)offers.Count / (double)orders.Count;
 
-            dto.AverageOffersForOneOrder = (int)Math.Ceiling(avg);
+                dto.AverageOffersForOneOrder = (int)Math.Ceiling(avg);
+            }
 
             return dto;
         }
