@@ -122,6 +122,8 @@ namespace ZleceniaAPI.Services
         {
             var categories = _mapper.Map<List<UserCategoryDto>>(_dbContext.UsersCategories
                 .Include(c => c.Category)
+                .ThenInclude(p => p.ParentCategory)
+                .ThenInclude(p2 => p2.ParentCategory)
                 .Where(e => e.UserId == userId).ToList());
 
             return categories;

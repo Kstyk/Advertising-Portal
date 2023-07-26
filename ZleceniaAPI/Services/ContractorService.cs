@@ -75,6 +75,7 @@ namespace ZleceniaAPI.Services
             foreach(var user in usersDto)
             {
                 user.AverageRate = GetAverageRate(user.Id);
+                user.CountOpinions = _dbContext.Opinions.Where(r => r.ContractorId == user.Id).Count();
             }
 
             var result = new PagedResult<ContractorDto>(usersDto, baseQuery.Count(), query.PageSize, query.PageNumber);

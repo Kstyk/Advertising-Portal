@@ -1,8 +1,10 @@
 ﻿using AutoMapper;
 using Azure;
+using MailKit.Net.Smtp;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration.UserSecrets;
+using MimeKit;
 using System.Linq.Expressions;
 using System.Net;
 using ZleceniaAPI.Entities;
@@ -376,6 +378,8 @@ namespace ZleceniaAPI.Services
 
                 var offerdto = _mapper.Map<OfferDto>(offer);
 
+                SnedConfirmationToWinnerOfferOwner(order, offer);
+
                 return offerdto;
             }
 
@@ -395,13 +399,19 @@ namespace ZleceniaAPI.Services
                 .Include(u => u.User)
                 .FirstOrDefault(o => o.Id == order.WinnerOfferId));
 
-            var ifRated = _dbContext.Opinions.FirstOrDefault(o => o.OfferId == offer.Id);
+            if (offer != null)
+            {
+                var ifRated = _dbContext.Opinions.FirstOrDefault(o => o.OfferId == offer.Id);
 
-            if(ifRated != null) {
-                offer.IsRated = true;
+                if (ifRated != null)
+                {
+                    offer.IsRated = true;
+                }
+
+                return offer;
             }
 
-            return offer;
+            return null;
         }
 
         public PagedResult<OrderDto> GetUserOrders(OrderQuery? query)
@@ -556,6 +566,44 @@ namespace ZleceniaAPI.Services
             }
 
             return dto;
+        }
+
+        private void SnedConfirmationToWinnerOfferOwner(Order order, Offer offer)
+        {
+            var email = new MimeMessage();
+
+            email.From.Add(new MailboxAddress("zlecenia.azurewebsites.net", "zleceniainfo@gmail.com"));
+            email.To.Add(new MailboxAddress(offer.User.Email, offer.User.Email));
+
+            email.Subject = "Twoja oferta została wybrana jako zwycięska!";
+            var bodyBuilder = new BodyBuilder();
+            bodyBuilder.HtmlBody = $"<h1>Gratulacje!</h1><br/>Twoja oferta do zlecenia:" +
+                $" <a href='https://zlecenia.azurewebsites.net/orders/order/{order.Id}'>{order.Title}</a> - została wybrana jako wygrana! <br/>" +
+                $"Wejdź na <a href='https://zlecenia.azurewebsites.net'>zlecenia.azurewebsites.net</a> i przekonaj się sam.";
+
+            email.Body = bodyBuilder.ToMessageBody();
+
+            var smtpSettings = GetSmtpSettingsFromConfig();
+
+            using (var smtp = new SmtpClient())
+            {
+                smtp.Connect(smtpSettings.SmtpServer, smtpSettings.SmtpPort, false);
+                smtp.Authenticate(smtpSettings.Username, smtpSettings.Password);
+
+                smtp.Send(email);
+                smtp.Disconnect(true);
+            }
+        }
+
+        private SmtpSettings GetSmtpSettingsFromConfig()
+        {
+            var configuration = new ConfigurationBuilder()
+                .SetBasePath(Directory.GetCurrentDirectory())
+                .AddJsonFile("smtpsettings.json")
+                .Build();
+
+            var smtpSettings = configuration.GetSection("SmtpSettings").Get<SmtpSettings>();
+            return smtpSettings;
         }
     }
 }
