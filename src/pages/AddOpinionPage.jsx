@@ -13,8 +13,6 @@ const AddOpinionPage = () => {
   const {
     register,
     handleSubmit,
-    setValue,
-    control,
     formState: { errors },
   } = useForm({
     mode: "all",
